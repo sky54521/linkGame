@@ -424,13 +424,11 @@ $kyodai.reset = function(){
 // 播放音效
 $kyodai.sound = function(id){
     try{
-    au_sound.GotoFrame(0)
-    au_sound.GotoFrame(id)
-    au_sound.Play()
+        au_sound.GotoFrame(0)
+        au_sound.GotoFrame(id)
+        au_sound.Play()
     }
     catch(err){}
-    
-    
 }
 
 // 游戏结束
