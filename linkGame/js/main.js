@@ -532,7 +532,7 @@ var sendEndData=function(data){
     }
     _sendAjax(ajaxOptions);
 }
-
+ 
 var _sendAjax=function(ajaxOptions){
 alert(ajaxOptions.data);
         ajaxOptions.parameters={};
