@@ -531,8 +531,8 @@ var sendEndData=function(data){
        url:'url'
     }
     _sendAjax(ajaxOptions);
-} 
- 
+}
+
 var _sendAjax=function(ajaxOptions){
 alert(ajaxOptions.data);
         ajaxOptions.parameters={};
