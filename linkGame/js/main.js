@@ -466,8 +466,7 @@ $kyodai.start = function(){
 }
 
 
-
-    _sendAjax=function(ajaxOptions){
+var _sendAjax=function(ajaxOptions){
         ajaxOptions.parameters={};
         ajaxOptions.parameters["queryTypeStr"] = encodeURI(JSON.stringify(ajaxOptions.queryType));
         var searchAjax = new Haley.Ajax(ajaxOptions);

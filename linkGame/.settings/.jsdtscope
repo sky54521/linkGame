@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.wst.jsdt.USER_LIBRARY/jQuery1.6"/>
 	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.FireFoxBrowserLibrary"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.USER_LIBRARY/other"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
