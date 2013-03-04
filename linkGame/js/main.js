@@ -535,16 +535,16 @@ var sendEndData=function(data){
 
 var _sendAjax=function(ajaxOptions){
 alert(ajaxOptions.data);
-        ajaxOptions.parameters={};
-        ajaxOptions.parameters["queryTypeStr"] = encodeURI(JSON.stringify(ajaxOptions.queryType));
-        var searchAjax = new Haley.Ajax(ajaxOptions);
-        searchAjax.onLoading = function(){};
-        searchAjax.onComplete = function(responseObject){
-            var result=responseObject.textString;
-            var retObj=$.parseJSON(result);
-        };
-//        searchAjax.start();
-    }
+    ajaxOptions.parameters={};
+    ajaxOptions.parameters["queryTypeStr"] = encodeURI(JSON.stringify(ajaxOptions.queryType));
+    var searchAjax = new Haley.Ajax(ajaxOptions);
+    searchAjax.onLoading = function(){};
+    searchAjax.onComplete = function(responseObject){
+        var result=responseObject.textString;
+        var retObj=$.parseJSON(result);
+    };
+//    searchAjax.start();
+}
 
 
 
