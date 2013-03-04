@@ -167,16 +167,48 @@ $kyodai.find = function(sx,sy,ex,ey){
 }
 
 
-// 读取关卡
-$kyodai.loadmap = function(xml){
-    $kyodai.block = {}
-    $kyodai.shape = []
+/**
+ * 从本地xml中载入map
+ * @return {}
+ */
+var _getMapByUrl=function(){
+    var mapurl="map/"+ Math.floor(Math.random()*$kyodai.mapLength) +".xml"
     var dom = new ActiveXObject("Microsoft.XMLDOM")
     dom.async = false
     // 随机地图
-    dom.load(xml)
+    dom.load(mapurl)
     var blocks = dom.selectSingleNode("map").text.split("\n")
     blocks.shift()
+    return blocks;
+}
+
+/**
+ * 从服务器端获取map
+ * @return {}
+ */
+var _getMapFromServer=function(){
+    var blocks=[
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-'
+    ];
+    return blocks;
+}
+
+// 读取关卡
+$kyodai.loadmap = function(){
+    $kyodai.block = {}
+    $kyodai.shape = []
+    
+    var blocks=_getMapByUrl();
     for(var x=0; x<blocks.length; x++){
         for(var y=0; y<blocks[0].length; y++){
             if (blocks[x].charAt(y) == "1"){
@@ -291,6 +323,7 @@ $kyodai.click = function(){
 
 // 消除一组
 $kyodai.del = function(sx,sy,ex,ey){
+	sendClickData({sx:sx,sy:sy,ex:ex,ey:ey});
     $kyodai.sound(3)
     $kyodai.count()
     $kyodai.remain -= 2
@@ -304,7 +337,10 @@ $kyodai.del = function(sx,sy,ex,ey){
     kyodai_del_1.src = "images/del.gif"
     kyodai_del_2.src = "images/del.gif"
     // 全部消除
-    if (!$kyodai.remain) setTimeout("$kyodai.over('win')",600)
+    if (!$kyodai.remain){
+        setTimeout("$kyodai.over('win')",600)
+        sendEndData('win');
+    }
 }
 
 // 倒计时
@@ -330,6 +366,7 @@ $kyodai.count = function(){
         if (counts < 2){
             // 时间耗尽
             $kyodai.over('timeover')
+            sendEndData('timeover');
         }
     }
     , 80)
@@ -446,6 +483,7 @@ $kyodai.over = function(type){
 
 // 开始练习
 $kyodai.start = function(){
+	sendStartData();
     kyodai_center.style.display = 'none'
     $kyodai.sound(1)
     $kyodai.cancel()
@@ -462,11 +500,41 @@ $kyodai.start = function(){
         if (event.keyCode==49 && $kyodai.pptnum[1]) $kyodai.use(1)
         if (event.d==50 && $kyodai.pptnum[2]) $kyodai.use(2)
     }
-    $kyodai.loadmap("map/"+ Math.floor(Math.random()*$kyodai.mapLength) +".xml")
+    $kyodai.loadmap()
 }
 
 
+
+
+/**
+ * 第一次与服务器通信
+ */
+var sendStartData=function(data){
+	var ajaxOptions={
+	   data:new Date(),
+	   url:'url'
+	}
+	_sendAjax(ajaxOptions);
+}
+
+var sendClickData=function(data){
+    var ajaxOptions={
+       data:data,
+       url:'url'
+    }
+    _sendAjax(ajaxOptions);
+}
+
+var sendEndData=function(data){
+    var ajaxOptions={
+       data:data,
+       url:'url'
+    }
+    _sendAjax(ajaxOptions);
+}
+
 var _sendAjax=function(ajaxOptions){
+alert(ajaxOptions.data);
         ajaxOptions.parameters={};
         ajaxOptions.parameters["queryTypeStr"] = encodeURI(JSON.stringify(ajaxOptions.queryType));
         var searchAjax = new Haley.Ajax(ajaxOptions);
@@ -475,7 +543,7 @@ var _sendAjax=function(ajaxOptions){
             var result=responseObject.textString;
             var retObj=$.parseJSON(result);
         };
-        searchAjax.start();
+//        searchAjax.start();
     }
 
 
