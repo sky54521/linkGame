@@ -534,9 +534,9 @@ var sendEndData=function(data){
 }
 
 var _sendAjax=function(ajaxOptions){
-alert(ajaxOptions.data);
+alert(JSON.stringify(ajaxOptions.data));
     ajaxOptions.parameters={};
-    ajaxOptions.parameters["queryTypeStr"] = encodeURI(JSON.stringify(ajaxOptions.queryType));
+    ajaxOptions.parameters['queryTypeStr'] = encodeURI(JSON.stringify(ajaxOptions.data));
     var searchAjax = new Haley.Ajax(ajaxOptions);
     searchAjax.onLoading = function(){};
     searchAjax.onComplete = function(responseObject){
