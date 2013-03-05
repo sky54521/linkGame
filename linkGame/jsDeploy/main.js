@@ -1,127 +1,127 @@
 var $kyodai = {mapX:19, mapY:11, mapLength:14}
 
 // 一个点(x,y)向4面延伸直到遇到障碍或出界 (画十字)
-$kyodai["\x63\x72\x6f\x73\x73"] = function(x, K2){
-    for (var AC3=x-1; AC3>-1; AC3--)
-        if ($kyodai["\x62\x6c\x6f\x63\x6b"][AC3+ "\x2c" +K2]) break
+$kyodai.cross = function(x, y){
+    for (var x1=x-1; x1>-1; x1--)
+        if ($kyodai.block[x1+ "," +y]) break
 
-    for (var ewmBh4=x+1; ewmBh4<$kyodai["\x6d\x61\x70\x58"]; ewmBh4++)
-        if ($kyodai["\x62\x6c\x6f\x63\x6b"][ewmBh4+ "\x2c" +K2]) break
+    for (var x2=x+1; x2<$kyodai.mapX; x2++)
+        if ($kyodai.block[x2+ "," +y]) break
 
-    for (var Xi5=K2-1; Xi5>-1; Xi5--)
-        if ($kyodai["\x62\x6c\x6f\x63\x6b"][x+ "\x2c" +Xi5]) break
+    for (var y1=y-1; y1>-1; y1--)
+        if ($kyodai.block[x+ "," +y1]) break
 
-    for (var h6=K2+1; h6<$kyodai["\x6d\x61\x70\x59"]; h6++)
-        if ($kyodai["\x62\x6c\x6f\x63\x6b"][x+ "\x2c" +h6]) break
+    for (var y2=y+1; y2<$kyodai.mapY; y2++)
+        if ($kyodai.block[x+ "," +y2]) break
 
-    return {AC3:AC3, ewmBh4:ewmBh4, Xi5:Xi5, h6:h6}
+    return {x1:x1, x2:x2, y1:y1, y2:y2}
 }
 
 // x 方向2点间是否连通
-$kyodai["\x70\x61\x73\x73\x78"] = function(x1,qc$ykPdJ7,LSnCQs8){
-    if (x1 < qc$ykPdJ7){
-        while (++x1 < qc$ykPdJ7)
-            if ($kyodai["\x62\x6c\x6f\x63\x6b"][x1+ "\x2c" +LSnCQs8]) return false
+$kyodai.passx = function(x1,x2,y){
+    if (x1 < x2){
+        while (++x1 < x2)
+            if ($kyodai.block[x1+ "," +y]) return false
     }
     else{
-        while (++qc$ykPdJ7 < x1)
-            if ($kyodai["\x62\x6c\x6f\x63\x6b"][qc$ykPdJ7+ "\x2c" +LSnCQs8]) return false
+        while (++x2 < x1)
+            if ($kyodai.block[x2+ "," +y]) return false
     }
     return true
 }
 // y 方向
-$kyodai["\x70\x61\x73\x73\x79"] = function(y1,E_o9,EUq10){
-    if (y1 < E_o9){
-        while (++y1 < E_o9)
-            if ($kyodai["\x62\x6c\x6f\x63\x6b"][EUq10+ "\x2c" +y1]) return false
+$kyodai.passy = function(y1,y2,x){
+    if (y1 < y2){
+        while (++y1 < y2)
+            if ($kyodai.block[x+ "," +y1]) return false
     }
     else{
-        while (++E_o9 < y1)
-            if ($kyodai["\x62\x6c\x6f\x63\x6b"][EUq10+ "\x2c" +E_o9]) return false
+        while (++y2 < y1)
+            if ($kyodai.block[x+ "," +y2]) return false
     }
     return true
 }
 
 // x 方向2点间画一条线 (连通情况下)
-$kyodai["\x6c\x69\x6e\x65\x78"] = function(x1, QmoVvvWDp11, oTd12){
-    var NKXlP13 = []
-    if (x1 < QmoVvvWDp11){
-        while (x1++ < QmoVvvWDp11)
-        NKXlP13["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x78\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+(x1*31-16)+'\x70\x78\x3b\x74\x6f\x70\x3a'+oTd12*35+'\x70\x78\x22\x3e')
+$kyodai.linex = function(x1, x2, y){
+    var path = []
+    if (x1 < x2){
+        while (x1++ < x2)
+        path.push('<img src="images/linex.gif" style="position:absolute;left:'+(x1*31-16)+'px;top:'+y*35+'px">')
     }
     else{
-        while (QmoVvvWDp11++ < x1)
-        NKXlP13["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x78\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+(QmoVvvWDp11*31-16)+'\x70\x78\x3b\x74\x6f\x70\x3a'+oTd12*35+'\x70\x78\x22\x3e')
+        while (x2++ < x1)
+        path.push('<img src="images/linex.gif" style="position:absolute;left:'+(x2*31-16)+'px;top:'+y*35+'px">')
     }
-    return NKXlP13
+    return path
 }
 // y 方向
-$kyodai["\x6c\x69\x6e\x65\x79"] = function(y1, AXpHJSe14, KX15){
-    var lvdOTwQ16 = []
-    if (y1 < AXpHJSe14){
-        while (y1++ < AXpHJSe14)
-        lvdOTwQ16["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x79\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+KX15*31+'\x70\x78\x3b\x74\x6f\x70\x3a'+(y1*35-18)+'\x70\x78\x22\x3e')
+$kyodai.liney = function(y1, y2, x){
+    var path = []
+    if (y1 < y2){
+        while (y1++ < y2)
+        path.push('<img src="images/liney.gif" style="position:absolute;left:'+x*31+'px;top:'+(y1*35-18)+'px">')
     }
     else{
-        while (AXpHJSe14++ < y1)
-        lvdOTwQ16["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x79\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+KX15*31+'\x70\x78\x3b\x74\x6f\x70\x3a'+(AXpHJSe14*35-18)+'\x70\x78\x22\x3e')
+        while (y2++ < y1)
+        path.push('<img src="images/liney.gif" style="position:absolute;left:'+x*31+'px;top:'+(y2*35-18)+'px">')
     }
-    return lvdOTwQ16
+    return path
 }
 
 // 寻找2点间的连线
-$kyodai["\x66\x69\x6e\x64"] = function(sx,r17,jarOAzh18,wWNJZ$wEn19){
+$kyodai.find = function(sx,sy,ex,ey){
     // 开始点画十字
-    var $KsJBkac20 = $kyodai["\x63\x72\x6f\x73\x73"](sx, qZDQjg21)
+    var s = $kyodai.cross(sx, sy)
     // 如果开始点十字穿过结束点
-    if (qZDQjg21==wWNJZ$wEn19 && $KsJBkac20["\x78\x31"]<jarOAzh18 && jarOAzh18<$KsJBkac20["\x78\x32"]) return $kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, qZDQjg21)
-    if (sx==jarOAzh18 && $KsJBkac20["\x79\x31"]<wWNJZ$wEn19 && wWNJZ$wEn19<$KsJBkac20["\x79\x32"]) return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, wWNJZ$wEn19, sx)
+    if (sy==ey && s.x1<ex && ex<s.x2) return $kyodai.linex(sx, ex, sy)
+    if (sx==ex && s.y1<ey && ey<s.y2) return $kyodai.liney(sy, ey, sx)
     // 结束点画十字
-    var uR22 = $kyodai["\x63\x72\x6f\x73\x73"](jarOAzh18, WLsbnjb23)
+    var e = $kyodai.cross(ex, ey)
     // 开始点与结束点十字重叠部分
-    var rIEWkk24 = $KsJBkac20["\x78\x31"] < uR22["\x78\x31"] ? uR22["\x78\x31"] : $KsJBkac20["\x78\x31"]
-    var JQefjbTg25 = $KsJBkac20["\x78\x32"] > uR22["\x78\x32"] ? uR22["\x78\x32"] : $KsJBkac20["\x78\x32"]
-    var _Sl26 = $KsJBkac20["\x79\x31"] < uR22["\x79\x31"] ? uR22["\x79\x31"] : $KsJBkac20["\x79\x31"]
-    var w27 = $KsJBkac20["\x79\x32"] > uR22["\x79\x32"] ? uR22["\x79\x32"] : $KsJBkac20["\x79\x32"]
+    var x1 = s.x1 < e.x1 ? e.x1 : s.x1
+    var x2 = s.x2 > e.x2 ? e.x2 : s.x2
+    var y1 = s.y1 < e.y1 ? e.y1 : s.y1
+    var y2 = s.y2 > e.y2 ? e.y2 : s.y2
     // 如果结束点十字穿过开始点十字
-    if (rIEWkk24<sx && sx<JQefjbTg25 && _Sl26<WLsbnjb23 && WLsbnjb23<w27)
-        return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, sx)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, WLsbnjb23))
-    if (rIEWkk24<jarOAzh18 && jarOAzh18<JQefjbTg25 && _Sl26<qZDQjg21 && qZDQjg21<w27)
-        return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, jarOAzh18)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, qZDQjg21))
+    if (x1<sx && sx<x2 && y1<ey && ey<y2)
+        return $kyodai.liney(sy, ey, sx).concat($kyodai.linex(sx, ex, ey))
+    if (x1<ex && ex<x2 && y1<sy && sy<y2)
+        return $kyodai.liney(sy, ey, ex).concat($kyodai.linex(sx, ex, sy))
     // 两点之内 x 方向十字重叠部分 y 方向是否能连通
-    if (sx < jarOAzh18){
-        var DcFHs28 = sx
-        var wF29 = jarOAzh18
-        var LicD$eP30 = qZDQjg21
-        var okLsYemDI31 = WLsbnjb23
+    if (sx < ex){
+        var x3 = sx
+        var x4 = ex
+        var s1 = sy
+        var e1 = ey
     }
     else{
-        var XY32 = jarOAzh18
-        var CFgOEub33 = sx
-        var hIKP_Zyj34 = WLsbnjb23
-        var h35 = qZDQjg21
+        var x3 = ex
+        var x4 = sx
+        var s1 = ey
+        var e1 = sy
     }
-    for (var SMUIRle36=x3+1; SMUIRle36<x4; SMUIRle36++){
-        if (rIEWkk24<SMUIRle36 && SMUIRle36<JQefjbTg25 && $kyodai["\x70\x61\x73\x73\x79"](s1, e1, SMUIRle36)){
-            return $kyodai["\x6c\x69\x6e\x65\x79"](s1, e1, SMUIRle36)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](x3, SMUIRle36, s1), $kyodai["\x6c\x69\x6e\x65\x78"](SMUIRle36, x4, e1))
+    for (var x=x3+1; x<x4; x++){
+        if (x1<x && x<x2 && $kyodai.passy(s1, e1, x)){
+            return $kyodai.liney(s1, e1, x).concat($kyodai.linex(x3, x, s1), $kyodai.linex(x, x4, e1))
         }
     }
     // y 方向
-    if (qZDQjg21 < WLsbnjb23){
-        var FE37 = qZDQjg21
-        var K38 = WLsbnjb23
-        var EsnvEUP_39 = sx
-        var yr40 = jarOAzh18
+    if (sy < ey){
+        var y3 = sy
+        var y4 = ey
+        var s2 = sx
+        var e2 = ex
     }
     else{
-        var Usbk41 = WLsbnjb23
-        var Aswslsk42 = qZDQjg21
-        var PNwBpz43 = jarOAzh18
-        var Nyt44 = sx
+        var y3 = ey
+        var y4 = sy
+        var s2 = ex
+        var e2 = sx
     }
-    for (var nXi45=y3+1; nXi45<y4; nXi45++){
-        if (_Sl26<nXi45 && nXi45<w27 && $kyodai["\x70\x61\x73\x73\x78"](s2, e2, nXi45)){
-            return $kyodai["\x6c\x69\x6e\x65\x78"](s2, e2, nXi45)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x79"](y3, nXi45, s2), $kyodai["\x6c\x69\x6e\x65\x79"](nXi45, y4, e2))
+    for (var y=y3+1; y<y4; y++){
+        if (y1<y && y<y2 && $kyodai.passx(s2, e2, y)){
+            return $kyodai.linex(s2, e2, y).concat($kyodai.liney(y3, y, s2), $kyodai.liney(y, y4, e2))
         }
     }
     s1 = true
@@ -131,33 +131,33 @@ $kyodai["\x66\x69\x6e\x64"] = function(sx,r17,jarOAzh18,wWNJZ$wEn19){
     // 两点围成的矩形四顶点向外扩散
     while (s1 || e1 || s2 || e2){
         if (s1){
-            if (rIEWkk24 < --x3 && x3 < JQefjbTg25){
-                if ($kyodai["\x70\x61\x73\x73\x79"](qZDQjg21, WLsbnjb23, x3)){
-                    return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, x3)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](x3, sx, qZDQjg21), $kyodai["\x6c\x69\x6e\x65\x78"](x3, jarOAzh18, WLsbnjb23))
+            if (x1 < --x3 && x3 < x2){
+                if ($kyodai.passy(sy, ey, x3)){
+                    return $kyodai.liney(sy, ey, x3).concat($kyodai.linex(x3, sx, sy), $kyodai.linex(x3, ex, ey))
                 }
             }
             else s1 = false
         }
         if (e1){
-            if (rIEWkk24 < ++x4 && x4 < JQefjbTg25){
-                if ($kyodai["\x70\x61\x73\x73\x79"](qZDQjg21, WLsbnjb23, x4)){
-                    return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, x4)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](x4, sx, qZDQjg21), $kyodai["\x6c\x69\x6e\x65\x78"](x4, jarOAzh18, WLsbnjb23))
+            if (x1 < ++x4 && x4 < x2){
+                if ($kyodai.passy(sy, ey, x4)){
+                    return $kyodai.liney(sy, ey, x4).concat($kyodai.linex(x4, sx, sy), $kyodai.linex(x4, ex, ey))
                 }
             }
             else e1 = false
         }
         if (s2){
-            if (_Sl26 < --y3 && y3 < w27){
-                if ($kyodai["\x70\x61\x73\x73\x78"](sx, jarOAzh18, y3)){
-                    return $kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, y3)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x79"](y3, qZDQjg21, sx), $kyodai["\x6c\x69\x6e\x65\x79"](y3, WLsbnjb23, jarOAzh18))
+            if (y1 < --y3 && y3 < y2){
+                if ($kyodai.passx(sx, ex, y3)){
+                    return $kyodai.linex(sx, ex, y3).concat($kyodai.liney(y3, sy, sx), $kyodai.liney(y3, ey, ex))
                 }
             }
             else s2 = false
         }
         if (e2){
-            if (_Sl26 < ++y4 && y4 < w27){
-                if ($kyodai["\x70\x61\x73\x73\x78"](sx, jarOAzh18, y4)){
-                    return $kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, y4)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x79"](y4, qZDQjg21, sx), $kyodai["\x6c\x69\x6e\x65\x79"](y4, WLsbnjb23, jarOAzh18))
+            if (y1 < ++y4 && y4 < y2){
+                if ($kyodai.passx(sx, ex, y4)){
+                    return $kyodai.linex(sx, ex, y4).concat($kyodai.liney(y4, sy, sx), $kyodai.liney(y4, ey, ex))
                 }
             }
             else e2 = false
@@ -171,275 +171,275 @@ $kyodai["\x66\x69\x6e\x64"] = function(sx,r17,jarOAzh18,wWNJZ$wEn19){
  * 从本地xml中载入map
  * @return {}
  */
-var GoC46=function(){
-    var iPtprDX47="\x6d\x61\x70\x2f"+ window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*$kyodai["\x6d\x61\x70\x4c\x65\x6e\x67\x74\x68"]) +"\x2e\x78\x6d\x6c"
-    var sjNwSdV48 = new ActiveXObject("\x4d\x69\x63\x72\x6f\x73\x6f\x66\x74\x2e\x58\x4d\x4c\x44\x4f\x4d")
-    sjNwSdV48["\x61\x73\x79\x6e\x63"] = false
+var _getMapByUrl=function(){
+    var mapurl="map/"+ Math.floor(Math.random()*$kyodai.mapLength) +".xml"
+    var dom = new ActiveXObject("Microsoft.XMLDOM")
+    dom.async = false
     // 随机地图
-    sjNwSdV48["\x6c\x6f\x61\x64"](iPtprDX47)
-    var UXpqUnt49 = sjNwSdV48["\x73\x65\x6c\x65\x63\x74\x53\x69\x6e\x67\x6c\x65\x4e\x6f\x64\x65"]("\x6d\x61\x70")["\x74\x65\x78\x74"]["\x73\x70\x6c\x69\x74"]("\n")
-    UXpqUnt49["\x73\x68\x69\x66\x74"]()
-    return UXpqUnt49;
+    dom.load(mapurl)
+    var blocks = dom.selectSingleNode("map").text.split("\n")
+    blocks.shift()
+    return blocks;
 }
 
 /**
  * 从服务器端获取map
  * @return {}
  */
-var StKvknrWS50=function(){
-    var bzOgiCRS51=[
-'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
-'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
-'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
-'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
-'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
-'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
-'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
-'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
-'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
-'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
-'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d'
+var _getMapFromServer=function(){
+    var blocks=[
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-',
+'1-1-1-1-1-1-1-1-1-1',
+'-1-1-1-1-1-1-1-1-1-'
     ];
-    return bzOgiCRS51;
+    return blocks;
 }
 
 // 读取关卡
-$kyodai["\x6c\x6f\x61\x64\x6d\x61\x70"] = function(){
-    $kyodai["\x62\x6c\x6f\x63\x6b"] = {}
-    $kyodai["\x73\x68\x61\x70\x65"] = []
+$kyodai.loadmap = function(){
+    $kyodai.block = {}
+    $kyodai.shape = []
     
-    var iISEc52=GoC46();
-    for(var wBQVE53=0; wBQVE53<iISEc52["\x6c\x65\x6e\x67\x74\x68"]; wBQVE53++){
-        for(var QzHyo_YL54=0; QzHyo_YL54<iISEc52[0]["\x6c\x65\x6e\x67\x74\x68"]; QzHyo_YL54++){
-            if (iISEc52[wBQVE53]["\x63\x68\x61\x72\x41\x74"](QzHyo_YL54) == "\x31"){
-                $kyodai["\x73\x68\x61\x70\x65"]["\x70\x75\x73\x68"]({wBQVE53:QzHyo_YL54, QzHyo_YL54:wBQVE53})
+    var blocks=_getMapByUrl();
+    for(var x=0; x<blocks.length; x++){
+        for(var y=0; y<blocks[0].length; y++){
+            if (blocks[x].charAt(y) == "1"){
+                $kyodai.shape.push({x:y, y:x})
             }
         }
     }
     // 随机填充
-    var XgSJRVY55 = []
-    var SorsDVfsn56 = $kyodai["\x72\x61\x6e\x64\x6f\x6d"]([1, 2, 3, 4, 5, 6, 7, 8])
-    var bEtF57 = 2
-    var $FuW58 = $kyodai["\x73\x68\x61\x70\x65"]["\x6c\x65\x6e\x67\x74\x68"]
-    for (var YIs59=0; YIs59<5; YIs59++){
-        if (XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"]==8) bEtF57=1
-        if (XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"]==10) break
-        for (var EzUIBRA60=window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*bEtF57)*2+2; EzUIBRA60>0; EzUIBRA60--){
-            XgSJRVY55["\x70\x75\x73\x68"](SorsDVfsn56[YIs59])
+    var items = []
+    var itemppt = $kyodai.random([1, 2, 3, 4, 5, 6, 7, 8])
+    var n = 2
+    var num = $kyodai.shape.length
+    for (var i=0; i<5; i++){
+        if (items.length==8) n=1
+        if (items.length==10) break
+        for (var j=Math.floor(Math.random()*n)*2+2; j>0; j--){
+            items.push(itemppt[i])
         }
     }
-    for (bEtF57=9; bEtF57<42; bEtF57++){
-        if ($FuW58-XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"] < 3){
-            if ($FuW58 == XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"]) break
+    for (n=9; n<42; n++){
+        if (num-items.length < 3){
+            if (num == items.length) break
             else{
-                XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
-                XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+                items.push(n)
+                items.push(n)
                 break
             }
         }
-        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
-        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
-        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
-        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+        items.push(n)
+        items.push(n)
+        items.push(n)
+        items.push(n)
     }
-    kyodai_remain["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = $FuW58
-    $kyodai["\x72\x65\x6d\x61\x69\x6e"] = $FuW58
-    $kyodai["\x73\x65\x74\x74\x69\x6e\x67"](XgSJRVY55)
-    $kyodai["\x63\x6f\x75\x6e\x74"]()
+    kyodai_remain.innerText = num
+    $kyodai.remain = num
+    $kyodai.setting(items)
+    $kyodai.count()
 }
 
 // 布置图片
-$kyodai["\x73\x65\x74\x74\x69\x6e\x67"] = function(arr){
-    var ehhOPOD61 = []
-    $kyodai["\x73\x68\x61\x70\x65"] = $kyodai["\x72\x61\x6e\x64\x6f\x6d"]($kyodai["\x73\x68\x61\x70\x65"])
-    for (i=0; i<$kyodai["\x73\x68\x61\x70\x65"]["\x6c\x65\x6e\x67\x74\x68"]; i++){
-        var SqP$_VElL62 = arr[i]
-        x = $kyodai["\x73\x68\x61\x70\x65"][i]["\x78"]
-        y = $kyodai["\x73\x68\x61\x70\x65"][i]["\x79"]
-        $kyodai["\x62\x6c\x6f\x63\x6b"][x+"\x2c"+y] = SqP$_VElL62
-        if (SqP$_VElL62){
-            ehhOPOD61["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x69\x64\x3d\x49\x74\x65\x6d\x5f'+x+'\x5f'+y+' \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f'+ SqP$_VElL62 + '\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x7a\x2d\x69\x6e\x64\x65\x78\x3a'+ (100-x+y) +'\x3b\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+ x*31 +'\x70\x78\x3b\x74\x6f\x70\x3a'+ y*35 +'\x70\x78\x22\x3e')
+$kyodai.setting = function(arr){
+    var itemImg = []
+    $kyodai.shape = $kyodai.random($kyodai.shape)
+    for (i=0; i<$kyodai.shape.length; i++){
+        var Img = arr[i]
+        x = $kyodai.shape[i].x
+        y = $kyodai.shape[i].y
+        $kyodai.block[x+","+y] = Img
+        if (Img){
+            itemImg.push('<img id=Item_'+x+'_'+y+' src="images/'+ Img + '.gif" style="z-index:'+ (100-x+y) +';position:absolute;left:'+ x*31 +'px;top:'+ y*35 +'px">')
         }
     }
-    kyodai_items["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = ehhOPOD61["\x6a\x6f\x69\x6e"]("")
+    kyodai_items.innerHTML = itemImg.join("")
 }
 
 // 选中一个
-$kyodai["\x63\x68\x6f\x6f\x73\x65"] = function(x, Q63){
-    kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
-    $kyodai["\x70\x6f\x69\x6e\x74"] = {x:x, Q63:Q63}
-    kyodai_choose["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = x * 31 + 4
-    kyodai_choose["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x54\x6f\x70"] = Q63 * 35
+$kyodai.choose = function(x, y){
+    kyodai_cuechoose.innerText = ''
+    $kyodai.point = {x:x, y:y}
+    kyodai_choose.style.pixelLeft = x * 31 + 4
+    kyodai_choose.style.pixelTop = y * 35
 }
 
 // 取消选中
-$kyodai["\x63\x61\x6e\x63\x65\x6c"] = function(){
-    kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
-    $kyodai["\x70\x6f\x69\x6e\x74"] = false
-    kyodai_choose["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = -2000
+$kyodai.cancel = function(){
+    kyodai_cuechoose.innerText = ''
+    $kyodai.point = false
+    kyodai_choose.style.pixelLeft = -2000
 }
 
 // 点击事件
-$kyodai["\x63\x6c\x69\x63\x6b"] = function(){
-    var z$64 = window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"]((event["\x78"]-16) / 31)
-    var F65 = window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"]((event["\x79"]-182) / 35)
-    if (!$kyodai["\x62\x6c\x6f\x63\x6b"][z$64+"\x2c"+F65]) return
-    $kyodai["\x73\x6f\x75\x6e\x64"](2)
-    if (!$kyodai["\x70\x6f\x69\x6e\x74"]){
+$kyodai.click = function(){
+    var ex = Math.floor((event.x-16) / 31)
+    var ey = Math.floor((event.y-182) / 35)
+    if (!$kyodai.block[ex+","+ey]) return
+    $kyodai.sound(2)
+    if (!$kyodai.point){
         // 第一次点中
-        $kyodai["\x63\x68\x6f\x6f\x73\x65"](z$64, F65)
+        $kyodai.choose(ex, ey)
         return
     }
-    var J66 = $kyodai["\x70\x6f\x69\x6e\x74"]["\x78"]
-    var uROH67 = $kyodai["\x70\x6f\x69\x6e\x74"]["\x79"]
-    var HAogfnj68 = J66+"\x2c"+uROH67
-    var YFkAihlKG69 = z$64+"\x2c"+F65
-    if (HAogfnj68 == YFkAihlKG69){
+    var sx = $kyodai.point.x
+    var sy = $kyodai.point.y
+    var s = sx+","+sy
+    var e = ex+","+ey
+    if (s == e){
         // 点中同一个
-        $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
+        $kyodai.cancel()
         return
     }
-    var dHqEp70 = $kyodai["\x62\x6c\x6f\x63\x6b"][HAogfnj68]
-    var YY$wOeo71 = $kyodai["\x62\x6c\x6f\x63\x6b"][YFkAihlKG69]
-    if (dHqEp70 != YY$wOeo71){
+    var ss = $kyodai.block[s]
+    var ee = $kyodai.block[e]
+    if (ss != ee){
         // 不同类型
-        $kyodai["\x63\x68\x6f\x6f\x73\x65"](z$64, F65)
+        $kyodai.choose(ex, ey)
         return
     }
-    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
-    $kyodai["\x62\x6c\x6f\x63\x6b"][HAogfnj68] = 0
-    $kyodai["\x62\x6c\x6f\x63\x6b"][YFkAihlKG69] = 0
-    var bu72 = $kyodai["\x66\x69\x6e\x64"](J66, uROH67, z$64, F65)
-    if (!bu72){
+    $kyodai.cancel()
+    $kyodai.block[s] = 0
+    $kyodai.block[e] = 0
+    var line = $kyodai.find(sx, sy, ex, ey)
+    if (!line){
         // 不能连通
-        $kyodai["\x62\x6c\x6f\x63\x6b"][HAogfnj68] = dHqEp70
-        $kyodai["\x62\x6c\x6f\x63\x6b"][YFkAihlKG69] = YY$wOeo71
+        $kyodai.block[s] = ss
+        $kyodai.block[e] = ee
         return
     }
-    if (YY$wOeo71 < 4) $kyodai["\x61\x64\x64"](YY$wOeo71)
-    kyodai_lines["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = bu72["\x6a\x6f\x69\x6e"]("")
-    $kyodai["\x64\x65\x6c"](J66, uROH67, z$64, F65)
+    if (ee < 4) $kyodai.add(ee)
+    kyodai_lines.innerHTML = line.join("")
+    $kyodai.del(sx, sy, ex, ey)
 }
 
 // 消除一组
-$kyodai["\x64\x65\x6c"] = function(sx,ihgJWELRV76,i77,Jirz78){
-    sendClickData({sx:sx,ihgJWELRV76:ihgJWELRV76,i77:i77,Jirz78:Jirz78});
-    $kyodai["\x73\x6f\x75\x6e\x64"](3)
-    $kyodai["\x63\x6f\x75\x6e\x74"]()
-    $kyodai["\x72\x65\x6d\x61\x69\x6e"] -= 2
-    kyodai_remain["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = $kyodai["\x72\x65\x6d\x61\x69\x6e"]
-    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x49\x74\x65\x6d\x5f"+sx+"\x5f"+ihgJWELRV76)["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
-    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x49\x74\x65\x6d\x5f"+i77+"\x5f"+Jirz78)["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
-    kyodai_del_1["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = sx * 31 - 15
-    kyodai_del_1["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x54\x6f\x70"]  = ihgJWELRV76 * 35 - 15
-    kyodai_del_2["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = i77 * 31 - 15
-    kyodai_del_2["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x54\x6f\x70"]  = Jirz78 * 35 - 15
-    kyodai_del_1["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x64\x65\x6c\x2e\x67\x69\x66"
-    kyodai_del_2["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x64\x65\x6c\x2e\x67\x69\x66"
+$kyodai.del = function(sx,sy,ex,ey){
+    sendClickData({sx:sx,sy:sy,ex:ex,ey:ey});
+    $kyodai.sound(3)
+    $kyodai.count()
+    $kyodai.remain -= 2
+    kyodai_remain.innerText = $kyodai.remain
+    document.getElementById("Item_"+sx+"_"+sy).removeNode()
+    document.getElementById("Item_"+ex+"_"+ey).removeNode()
+    kyodai_del_1.style.pixelLeft = sx * 31 - 15
+    kyodai_del_1.style.pixelTop  = sy * 35 - 15
+    kyodai_del_2.style.pixelLeft = ex * 31 - 15
+    kyodai_del_2.style.pixelTop  = ey * 35 - 15
+    kyodai_del_1.src = "images/del.gif"
+    kyodai_del_2.src = "images/del.gif"
     // 全部消除
-    if (!$kyodai["\x72\x65\x6d\x61\x69\x6e"]){
-        setTimeout("\x24\x6b\x79\x6f\x64\x61\x69\x2e\x6f\x76\x65\x72\x28\x27\x77\x69\x6e\x27\x29",600)
-        sendEndData('\x77\x69\x6e');
+    if (!$kyodai.remain){
+        setTimeout("$kyodai.over('win')",600)
+        sendEndData('win');
     }
 }
 
 // 倒计时
-$kyodai["\x63\x6f\x75\x6e\x74"] = function(){
-    clearInterval($kyodai["\x74\x69\x6d\x65\x69\x64"])
-    kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x31\x2e\x67\x69\x66"
-    kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"] = 330
-    $kyodai["\x74\x69\x6d\x65\x69\x64"] = setInterval(function(){
-        var gmucyvo79 = kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"]
-        kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"] = gmucyvo79-1
-        switch (gmucyvo79){
+$kyodai.count = function(){
+    clearInterval($kyodai.timeid)
+    kyodai_count.src = "images/count1.gif"
+    kyodai_count.style.pixelWidth = 330
+    $kyodai.timeid = setInterval(function(){
+        var counts = kyodai_count.style.pixelWidth
+        kyodai_count.style.pixelWidth = counts-1
+        switch (counts){
             // 颜色棒
-            case 270 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x32\x2e\x67\x69\x66"
+            case 270 : kyodai_count.src = "images/count2.gif"
             break
-            case 180 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x33\x2e\x67\x69\x66"
+            case 180 : kyodai_count.src = "images/count3.gif"
             break
-            case 100 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x34\x2e\x67\x69\x66"
+            case 100 : kyodai_count.src = "images/count4.gif"
             break
-            case  65 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x35\x2e\x67\x69\x66"
+            case  65 : kyodai_count.src = "images/count5.gif"
             break
-            case  30 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x36\x2e\x67\x69\x66"
+            case  30 : kyodai_count.src = "images/count6.gif"
         }
-        if (gmucyvo79 < 2){
+        if (counts < 2){
             // 时间耗尽
-            $kyodai["\x6f\x76\x65\x72"]('\x74\x69\x6d\x65\x6f\x76\x65\x72')
-            sendEndData('\x74\x69\x6d\x65\x6f\x76\x65\x72');
+            $kyodai.over('timeover')
+            sendEndData('timeover');
         }
     }
     , 80)
 }
 
 // 打乱数组
-$kyodai["\x72\x61\x6e\x64\x6f\x6d"] = function(arr){
-    var Lnb80 = []
-    while (arr["\x6c\x65\x6e\x67\x74\x68"]){
-        Lnb80=Lnb80["\x73\x70\x6c\x69\x63\x65"](0,window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*(Lnb80["\x6c\x65\x6e\x67\x74\x68"]+1)))["\x63\x6f\x6e\x63\x61\x74"](arr["\x73\x70\x6c\x69\x63\x65"](window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*arr["\x6c\x65\x6e\x67\x74\x68"]),1),Lnb80)
+$kyodai.random = function(arr){
+    var rnd = []
+    while (arr.length){
+        rnd=rnd.splice(0,Math.floor(Math.random()*(rnd.length+1))).concat(arr.splice(Math.floor(Math.random()*arr.length),1),rnd)
     }
-    return Lnb80
+    return rnd
 }
 
 // 添加道具
-$kyodai["\x61\x64\x64"] = function(id){
-    if ($kyodai["\x70\x70\x74\x6e\x75\x6d"][id]){
-        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id+"\x5f\x6e\x75\x6d")["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f"+ ++$kyodai["\x70\x70\x74\x6e\x75\x6d"][id] +"\x2e\x67\x69\x66"
+$kyodai.add = function(id){
+    if ($kyodai.pptnum[id]){
+        document.getElementById("kyodai_ppt_"+id+"_num").src = "images/ppt_num_"+ ++$kyodai.pptnum[id] +".gif"
     }
     else{
-        $kyodai["\x70\x70\x74\x6e\x75\x6d"][id] = 1
-        kyodai_ppt["\x69\x6e\x73\x65\x72\x74\x41\x64\x6a\x61\x63\x65\x6e\x74\x48\x54\x4d\x4c"]('\x62\x65\x66\x6f\x72\x65\x45\x6e\x64', '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f'+id+' \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f'+id+'\x2e\x67\x69\x66\x22\x3e')
-        kyodai_ppt_num["\x69\x6e\x73\x65\x72\x74\x41\x64\x6a\x61\x63\x65\x6e\x74\x48\x54\x4d\x4c"]('\x62\x65\x66\x6f\x72\x65\x45\x6e\x64', '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f'+id+'\x5f\x6e\x75\x6d \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f\x31\x2e\x67\x69\x66\x22 \x6f\x6e\x63\x6c\x69\x63\x6b\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x75\x73\x65\x28'+id+'\x29\x22\x3e')
+        $kyodai.pptnum[id] = 1
+        kyodai_ppt.insertAdjacentHTML('beforeEnd', '<img id=kyodai_ppt_'+id+' src="images/ppt_'+id+'.gif">')
+        kyodai_ppt_num.insertAdjacentHTML('beforeEnd', '<img id=kyodai_ppt_'+id+'_num src="images/ppt_num_1.gif" onclick="$kyodai.use('+id+')">')
     }
 }
 
 // 使用道具
-$kyodai["\x75\x73\x65"] = function(id){
-    $kyodai["\x73\x6f\x75\x6e\x64"](4)
-    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
-    if (--$kyodai["\x70\x70\x74\x6e\x75\x6d"][id]){
-        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id+"\x5f\x6e\x75\x6d")["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f"+ $kyodai["\x70\x70\x74\x6e\x75\x6d"][id] +"\x2e\x67\x69\x66"
+$kyodai.use = function(id){
+    $kyodai.sound(4)
+    $kyodai.cancel()
+    if (--$kyodai.pptnum[id]){
+        document.getElementById("kyodai_ppt_"+id+"_num").src = "images/ppt_num_"+ $kyodai.pptnum[id] +".gif"
     }
     else{
-        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id)["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
-        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id+"\x5f\x6e\x75\x6d")["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
+        document.getElementById("kyodai_ppt_"+id).removeNode()
+        document.getElementById("kyodai_ppt_"+id+"_num").removeNode()
     }
     switch (id){
         // 提示
-        case 1 : $kyodai["\x63\x75\x65"](false)
+        case 1 : $kyodai.cue(false)
         break
         // 重列
-        case 2 : $kyodai["\x72\x65\x73\x65\x74"]()
+        case 2 : $kyodai.reset()
         break
         // 炸弹
-        case 3 : $kyodai["\x63\x75\x65"](true)
+        case 3 : $kyodai.cue(true)
     }
 }
 
 // 自动寻找
-$kyodai["\x63\x75\x65"] = function(isbomb){
-    var iwFlWGb81 = $kyodai["\x73\x68\x61\x70\x65"]
-    var sSEqa82 = $kyodai["\x70\x70\x74\x6e\x75\x6d"][1]
-    for (var eOYGtofj83=0; eOYGtofj83<iwFlWGb81["\x6c\x65\x6e\x67\x74\x68"]; eOYGtofj83++){
-        sSEqa82 = $kyodai["\x62\x6c\x6f\x63\x6b"][iwFlWGb81[eOYGtofj83]["\x78"]+"\x2c"+iwFlWGb81[eOYGtofj83]["\x79"]]
-        if (sSEqa82){
-            for (var zcv84=eOYGtofj83+1; zcv84<iwFlWGb81["\x6c\x65\x6e\x67\x74\x68"]; zcv84++){
-                if (sSEqa82 == $kyodai["\x62\x6c\x6f\x63\x6b"][iwFlWGb81[zcv84]["\x78"]+"\x2c"+iwFlWGb81[zcv84]["\x79"]]){
-                    var CCmvFrGro85 = iwFlWGb81[eOYGtofj83]["\x78"]
-                    var JHY86 = iwFlWGb81[eOYGtofj83]["\x79"]
-                    var cyo87 = iwFlWGb81[zcv84]["\x78"]
-                    var ZhGtXQJIN88 = iwFlWGb81[zcv84]["\x79"]
-                    var tYnsQE89 = $kyodai["\x66\x69\x6e\x64"](CCmvFrGro85, JHY86, cyo87, ZhGtXQJIN88)
-                    if (tYnsQE89){
-                        kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = 
-                        '\x3c\x69\x6d\x67 \x73\x72\x63 \x3d \x22\x69\x6d\x61\x67\x65\x73\x2f\x63\x68\x6f\x6f\x73\x65\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x63\x6c\x69\x63\x6b\x28'+CCmvFrGro85+'\x2c'+JHY86+'\x29\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+ (CCmvFrGro85*31+4) +'\x70\x78\x3b\x74\x6f\x70\x3a'+ JHY86*35 +'\x70\x78\x22\x3e'
-                        + '\x3c\x69\x6d\x67 \x73\x72\x63 \x3d \x22\x69\x6d\x61\x67\x65\x73\x2f\x63\x68\x6f\x6f\x73\x65\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x63\x6c\x69\x63\x6b\x28'+cyo87+'\x2c'+ZhGtXQJIN88+'\x29\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+ (cyo87*31+4) +'\x70\x78\x3b\x74\x6f\x70\x3a'+ ZhGtXQJIN88*35 +'\x70\x78\x22\x3e'
-                        kyodai_lines["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = tYnsQE89["\x6a\x6f\x69\x6e"]("")
+$kyodai.cue = function(isbomb){
+    var s = $kyodai.shape
+    var n = $kyodai.pptnum[1]
+    for (var i=0; i<s.length; i++){
+        n = $kyodai.block[s[i].x+","+s[i].y]
+        if (n){
+            for (var j=i+1; j<s.length; j++){
+                if (n == $kyodai.block[s[j].x+","+s[j].y]){
+                    var sx = s[i].x
+                    var sy = s[i].y
+                    var ex = s[j].x
+                    var ey = s[j].y
+                    var line = $kyodai.find(sx, sy, ex, ey)
+                    if (line){
+                        kyodai_cuechoose.innerHTML = 
+                        '<img src = "images/choose.gif" onmouseup="$kyodai.click('+sx+','+sy+')" style="position:absolute;left:'+ (sx*31+4) +'px;top:'+ sy*35 +'px">'
+                        + '<img src = "images/choose.gif" onmouseup="$kyodai.click('+ex+','+ey+')" style="position:absolute;left:'+ (ex*31+4) +'px;top:'+ ey*35 +'px">'
+                        kyodai_lines.innerHTML = line.join("")
                         if (isbomb){
-                            kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
-                            $kyodai["\x62\x6c\x6f\x63\x6b"][CCmvFrGro85+"\x2c"+JHY86] = 0
-                            $kyodai["\x62\x6c\x6f\x63\x6b"][cyo87+"\x2c"+ZhGtXQJIN88] = 0
-                            $kyodai["\x64\x65\x6c"](CCmvFrGro85, JHY86, cyo87, ZhGtXQJIN88)
+                            kyodai_cuechoose.innerText = ''
+                            $kyodai.block[sx+","+sy] = 0
+                            $kyodai.block[ex+","+ey] = 0
+                            $kyodai.del(sx, sy, ex, ey)
                         }
                         return
                     }
@@ -450,57 +450,57 @@ $kyodai["\x63\x75\x65"] = function(isbomb){
 }
 
 // 重新排列
-$kyodai["\x72\x65\x73\x65\x74"] = function(){
-    var esvNRbIW93 = []
-    for (var JTMBh94 in ZS_95kyodai["\x62\x6c\x6f\x63\x6b"]){
-        esvNRbIW93["\x70\x75\x73\x68"](ZS_95kyodai["\x62\x6c\x6f\x63\x6b"][JTMBh94])
+$kyodai.reset = function(){
+    var blocks = []
+    for (var i in $kyodai.block){
+        blocks.push($kyodai.block[i])
     }
-    ZS_95kyodai["\x73\x65\x74\x74\x69\x6e\x67"](esvNRbIW93)
+    $kyodai.setting(blocks)
 }
 
 // 播放音效
-$kyodai["\x73\x6f\x75\x6e\x64"] = function(id){
+$kyodai.sound = function(id){
     try{
-        au_sound["\x47\x6f\x74\x6f\x46\x72\x61\x6d\x65"](0)
-        au_sound["\x47\x6f\x74\x6f\x46\x72\x61\x6d\x65"](id)
-        au_sound["\x50\x6c\x61\x79"]()
+        au_sound.GotoFrame(0)
+        au_sound.GotoFrame(id)
+        au_sound.Play()
     }
     catch(err){}
 }
 
 // 游戏结束
-$kyodai["\x6f\x76\x65\x72"] = function(type){
-    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
-    clearInterval($kyodai["\x74\x69\x6d\x65\x69\x64"])
-    kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"] = 0
-    kyodai_center["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f" + type + "\x2e\x67\x69\x66"
-    kyodai_center["\x73\x74\x79\x6c\x65"]["\x64\x69\x73\x70\x6c\x61\x79"] = ''
-    kyodai_items["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
-    kyodai_ppt_num["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
-    kyodai_ppt["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = '\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x2e\x67\x69\x66\x22\x3e'
-    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x6f\x6e\x6b\x65\x79\x64\x6f\x77\x6e"] = null
+$kyodai.over = function(type){
+    $kyodai.cancel()
+    clearInterval($kyodai.timeid)
+    kyodai_count.style.pixelWidth = 0
+    kyodai_center.src = "images/" + type + ".gif"
+    kyodai_center.style.display = ''
+    kyodai_items.innerText = ''
+    kyodai_ppt_num.innerText = ''
+    kyodai_ppt.innerHTML = '<img src="images/ppt.gif">'
+    document.onkeydown = null
 }
 
 // 开始练习
-$kyodai["\x73\x74\x61\x72\x74"] = function(){
+$kyodai.start = function(){
     sendStartData();
-    kyodai_center["\x73\x74\x79\x6c\x65"]["\x64\x69\x73\x70\x6c\x61\x79"] = '\x6e\x6f\x6e\x65'
-    $kyodai["\x73\x6f\x75\x6e\x64"](1)
-    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
-    $kyodai["\x70\x70\x74\x6e\x75\x6d"] = {1:3, 2:3}
+    kyodai_center.style.display = 'none'
+    $kyodai.sound(1)
+    $kyodai.cancel()
+    $kyodai.pptnum = {1:3, 2:3}
     // 道具图片
-    kyodai_ppt["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = 
-        '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x31 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x31\x2e\x67\x69\x66\x22\x3e'
-    +   '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x32 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x32\x2e\x67\x69\x66\x22\x3e'
-    kyodai_ppt_num["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = 
-        '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x31\x5f\x6e\x75\x6d \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f\x33\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x75\x73\x65\x28\x31\x29\x22\x3e'
-    +   '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x32\x5f\x6e\x75\x6d \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f\x33\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x75\x73\x65\x28\x32\x29\x22\x3e'
+    kyodai_ppt.innerHTML = 
+        '<img id=kyodai_ppt_1 src="images/ppt_1.gif">'
+    +   '<img id=kyodai_ppt_2 src="images/ppt_2.gif">'
+    kyodai_ppt_num.innerHTML = 
+        '<img id=kyodai_ppt_1_num src="images/ppt_num_3.gif" onmouseup="$kyodai.use(1)">'
+    +   '<img id=kyodai_ppt_2_num src="images/ppt_num_3.gif" onmouseup="$kyodai.use(2)">'
     // 快捷键
-    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x6f\x6e\x6b\x65\x79\x64\x6f\x77\x6e"] = function(){
-        if (event["\x6b\x65\x79\x43\x6f\x64\x65"]==49 && $kyodai["\x70\x70\x74\x6e\x75\x6d"][1]) $kyodai["\x75\x73\x65"](1)
-        if (event["\x64"]==50 && $kyodai["\x70\x70\x74\x6e\x75\x6d"][2]) $kyodai["\x75\x73\x65"](2)
+    document.onkeydown = function(){
+        if (event.keyCode==49 && $kyodai.pptnum[1]) $kyodai.use(1)
+        if (event.d==50 && $kyodai.pptnum[2]) $kyodai.use(2)
     }
-    $kyodai["\x6c\x6f\x61\x64\x6d\x61\x70"]()
+    $kyodai.loadmap()
 }
 
 
@@ -509,44 +509,44 @@ $kyodai["\x73\x74\x61\x72\x74"] = function(){
 /**
  * 第一次与服务器通信
  */
-var GaUR96=function(data){
-    var hijNSvI97={
-       data:new window["\x44\x61\x74\x65"](),
-       url:'\x75\x72\x6c'
+var sendStartData=function(data){
+    var ajaxOptions={
+       data:new Date(),
+       url:'url'
     }
-    _sendAjax(hijNSvI97);
+    _sendAjax(ajaxOptions);
 }
 
-var ww98=function(data){
-    var T99={
+var sendClickData=function(data){
+    var ajaxOptions={
        data:data,
-       url:'\x75\x72\x6c'
+       url:'url'
     }
-    _sendAjax(T99);
+    _sendAjax(ajaxOptions);
 }
 
-var $T100=function(data){
-    var QjXp101={
+var sendEndData=function(data){
+    var ajaxOptions={
        data:data,
-       url:'\x75\x72\x6c'
+       url:'url'
     }
-    _sendAjax(QjXp101);
+    _sendAjax(ajaxOptions);
 }
 
-var HdCsjMr102=function(ajaxOptions){
-window["\x61\x6c\x65\x72\x74"](JSON["\x73\x74\x72\x69\x6e\x67\x69\x66\x79"](ajaxOptions["\x64\x61\x74\x61"]));
-    ajaxOptions["\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x73"]={};
-    ajaxOptions["\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x73"]['\x71\x75\x65\x72\x79\x54\x79\x70\x65\x53\x74\x72'] = encodeURI(JSON["\x73\x74\x72\x69\x6e\x67\x69\x66\x79"](ajaxOptions["\x64\x61\x74\x61"]));
-    var cuAbJg103 = new Haley["\x41\x6a\x61\x78"](ajaxOptions);
-    cuAbJg103["\x6f\x6e\x4c\x6f\x61\x64\x69\x6e\x67"] = function(){};
-    cuAbJg103["\x6f\x6e\x43\x6f\x6d\x70\x6c\x65\x74\x65"] = function(responseObject){
-        var IPljuRB104=responseObject["\x74\x65\x78\x74\x53\x74\x72\x69\x6e\x67"];
-        var oIag105=$["\x70\x61\x72\x73\x65\x4a\x53\x4f\x4e"](IPljuRB104);
+var _sendAjax=function(ajaxOptions){
+alert(JSON.stringify(ajaxOptions.data));
+    ajaxOptions.parameters={};
+    ajaxOptions.parameters['queryTypeStr'] = encodeURI(JSON.stringify(ajaxOptions.data));
+    var searchAjax = new Haley.Ajax(ajaxOptions);
+    searchAjax.onLoading = function(){};
+    searchAjax.onComplete = function(responseObject){
+        var result=responseObject.textString;
+        var retObj=$.parseJSON(result);
     };
 //    searchAjax.start();
 }
 
 $(function(){
-    $('\x23\x6b\x79\x6f\x64\x61\x69\x5f\x73\x74\x61\x72\x74')["\x62\x69\x6e\x64"]('\x63\x6c\x69\x63\x6b', $kyodai["\x73\x74\x61\x72\x74"]);
-    $('\x23\x6b\x79\x6f\x64\x61\x69\x5f\x6d\x61\x70')["\x62\x69\x6e\x64"]('\x6f\x6e\x4d\x6f\x75\x73\x65\x55\x70', $kyodai["\x63\x6c\x69\x63\x6b"]);
+    $('#kyodai_start').bind('click', $kyodai.start);
+//    $('#kyodai_map').bind('mouseUp', $kyodai.click);
 })

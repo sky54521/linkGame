@@ -323,7 +323,7 @@ $kyodai.click = function(){
 
 // 消除一组
 $kyodai.del = function(sx,sy,ex,ey){
-	sendClickData({sx:sx,sy:sy,ex:ex,ey:ey});
+    sendClickData({sx:sx,sy:sy,ex:ex,ey:ey});
     $kyodai.sound(3)
     $kyodai.count()
     $kyodai.remain -= 2
@@ -483,7 +483,7 @@ $kyodai.over = function(type){
 
 // 开始练习
 $kyodai.start = function(){
-	sendStartData();
+    sendStartData();
     kyodai_center.style.display = 'none'
     $kyodai.sound(1)
     $kyodai.cancel()
@@ -510,11 +510,11 @@ $kyodai.start = function(){
  * 第一次与服务器通信
  */
 var sendStartData=function(data){
-	var ajaxOptions={
-	   data:new Date(),
-	   url:'url'
-	}
-	_sendAjax(ajaxOptions);
+    var ajaxOptions={
+       data:new Date(),
+       url:'url'
+    }
+    _sendAjax(ajaxOptions);
 }
 
 var sendClickData=function(data){
@@ -548,5 +548,5 @@ alert(JSON.stringify(ajaxOptions.data));
 
 $(function(){
     $('#kyodai_start').bind('click', $kyodai.start);
-    $('#kyodai_map').bind('onMouseUp', $kyodai.click);
+//    $('#kyodai_map').bind('mouseUp', $kyodai.click);
 })
