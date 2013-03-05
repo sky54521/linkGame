@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="GBK"?>
+<project name="userCenterJs" default="all" basedir=".">
+	<property name="yuicompressor.jar" location="lib/yuicompressor-2.4.2.jar" />
+	<property name="src.dir" location="js" />
+	<property name="js.src.dir" location="js" />
+	<property name="css.src.dir" location="js" />
+	<property name="dist.dir" location="jsDeploy" />
+
+	<target name="init" description="initialize version properties">
+		<tstamp>
+			<format property="TODAY" pattern="yyyyMMdd" locale="en"/>
+			<format property="TODAY_STRING" pattern="MMM dd, yyyy" locale="en"/>
+		</tstamp>
+		<property name="versionTag" value="${versionQualifier}_${TODAY}"/>
+		<property name="date.str" value="${TODAY}" />
+		<echo message="today is ${TODAY_STRING}"/>
+		<echo message="versionTag=${versionTag}"/>
+	</target>
+	
+	<target name="clean" depends="init">
+		<delete dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}" />
+
+		<copy todir="${dist.dir}">
+			<fileset dir="${src.dir}" />
+		</copy>
+		
+		<delete includeemptydirs="true">
+		  <fileset dir="${dist.dir}" includes="**/*.js" defaultexcludes="false"/>
+		  <fileset dir="${dist.dir}" includes="**/*.css" defaultexcludes="false"/>
+		</delete>
+	</target>
+	
+	<!-- JS Compress -->
+	<target name="js.compress">
+		<!-- java -jar yuicompressor-2.4.1.jar -o d:/temp/hello_min.js hello.js -->
+		<apply executable="java" parallel="false" failonerror="true">
+			<fileset dir="${js.src.dir}" includes="**/*.js" /> 
+			<arg line="-jar" />
+			<arg path="${yuicompressor.jar}" />
+			<arg line="--charset gbk" />
+			<srcfile />
+			<arg line="-o" />
+			<mapper type="glob" from="*.js" to="${dist.dir}/*.js" />
+			<targetfile />
+		</apply>
+	</target>
+
+	<!-- CSS Compress -->
+	<target name="css.compress">
+		<apply executable="java" parallel="false" failonerror="true">
+			<fileset dir="${css.src.dir}" includes="**/*.css" />
+			<arg line="-jar" />
+			<arg path="${yuicompressor.jar}" />
+			<arg line="--charset gbk" />
+			<srcfile />
+			<arg line="-o" />
+			<mapper type="glob" from="*.css" to="${dist.dir}/*.css" />
+			<targetfile />
+		</apply>
+	</target>
+
+	<target name="all" depends="clean,js.compress,css.compress">
+		<echo message="ALL done." />
+	</target>
+</project>
