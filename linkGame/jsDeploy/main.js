@@ -1,1 +1,552 @@
-var $kyodai={mapX:19,mapY:11,mapLength:14};$kyodai.cross=function(a,f){for(var c=a-1;c>-1;c--){if($kyodai.block[c+","+f]){break}}for(var b=a+1;b<$kyodai.mapX;b++){if($kyodai.block[b+","+f]){break}}for(var e=f-1;e>-1;e--){if($kyodai.block[a+","+e]){break}}for(var d=f+1;d<$kyodai.mapY;d++){if($kyodai.block[a+","+d]){break}}return{x1:c,x2:b,y1:e,y2:d}};$kyodai.passx=function(b,a,c){if(b<a){while(++b<a){if($kyodai.block[b+","+c]){return false}}}else{while(++a<b){if($kyodai.block[a+","+c]){return false}}}return true};$kyodai.passy=function(c,b,a){if(c<b){while(++c<b){if($kyodai.block[a+","+c]){return false}}}else{while(++b<c){if($kyodai.block[a+","+b]){return false}}}return true};$kyodai.linex=function(b,a,d){var c=[];if(b<a){while(b++<a){c.push('<img src="images/linex.gif" style="position:absolute;left:'+(b*31-16)+"px;top:"+d*35+'px">')}}else{while(a++<b){c.push('<img src="images/linex.gif" style="position:absolute;left:'+(a*31-16)+"px;top:"+d*35+'px">')}}return c};$kyodai.liney=function(c,b,a){var d=[];if(c<b){while(c++<b){d.push('<img src="images/liney.gif" style="position:absolute;left:'+a*31+"px;top:"+(c*35-18)+'px">')}}else{while(b++<c){d.push('<img src="images/liney.gif" style="position:absolute;left:'+a*31+"px;top:"+(b*35-18)+'px">')}}return d};$kyodai.find=function(o,n,v,t){var m=$kyodai.cross(o,n);if(n==t&&m.x1<v&&v<m.x2){return $kyodai.linex(o,v,n)}if(o==v&&m.y1<t&&t<m.y2){return $kyodai.liney(n,t,o)}var w=$kyodai.cross(v,t);var u=m.x1<w.x1?w.x1:m.x1;var r=m.x2>w.x2?w.x2:m.x2;var g=m.y1<w.y1?w.y1:m.y1;var f=m.y2>w.y2?w.y2:m.y2;if(u<o&&o<r&&g<t&&t<f){return $kyodai.liney(n,t,o).concat($kyodai.linex(o,v,t))}if(u<v&&v<r&&g<n&&n<f){return $kyodai.liney(n,t,v).concat($kyodai.linex(o,v,n))}if(o<v){var q=o;var p=v;var c=n;var j=t}else{var q=v;var p=o;var c=t;var j=n}for(var l=q+1;l<p;l++){if(u<l&&l<r&&$kyodai.passy(c,j,l)){return $kyodai.liney(c,j,l).concat($kyodai.linex(q,l,c),$kyodai.linex(l,p,j))}}if(n<t){var d=n;var b=t;var a=o;var h=v}else{var d=t;var b=n;var a=v;var h=o}for(var k=d+1;k<b;k++){if(g<k&&k<f&&$kyodai.passx(a,h,k)){return $kyodai.linex(a,h,k).concat($kyodai.liney(d,k,a),$kyodai.liney(k,b,h))}}c=true;j=true;a=true;h=true;while(c||j||a||h){if(c){if(u<--q&&q<r){if($kyodai.passy(n,t,q)){return $kyodai.liney(n,t,q).concat($kyodai.linex(q,o,n),$kyodai.linex(q,v,t))}}else{c=false}}if(j){if(u<++p&&p<r){if($kyodai.passy(n,t,p)){return $kyodai.liney(n,t,p).concat($kyodai.linex(p,o,n),$kyodai.linex(p,v,t))}}else{j=false}}if(a){if(g<--d&&d<f){if($kyodai.passx(o,v,d)){return $kyodai.linex(o,v,d).concat($kyodai.liney(d,n,o),$kyodai.liney(d,t,v))}}else{a=false}}if(h){if(g<++b&&b<f){if($kyodai.passx(o,v,b)){return $kyodai.linex(o,v,b).concat($kyodai.liney(b,n,o),$kyodai.liney(b,t,v))}}else{h=false}}}return false};var _getMapByUrl=function(){var c="map/"+Math.floor(Math.random()*$kyodai.mapLength)+".xml";var b=new ActiveXObject("Microsoft.XMLDOM");b.async=false;b.load(c);var a=b.selectSingleNode("map").text.split("\n");a.shift();return a};var _getMapFromServer=function(){var a=["-1-1-1-1-1-1-1-1-1-","1-1-1-1-1-1-1-1-1-1","-1-1-1-1-1-1-1-1-1-","1-1-1-1-1-1-1-1-1-1","-1-1-1-1-1-1-1-1-1-","1-1-1-1-1-1-1-1-1-1","-1-1-1-1-1-1-1-1-1-","1-1-1-1-1-1-1-1-1-1","-1-1-1-1-1-1-1-1-1-","1-1-1-1-1-1-1-1-1-1","-1-1-1-1-1-1-1-1-1-"];return a};$kyodai.loadmap=function(){$kyodai.block={};$kyodai.shape=[];var a=_getMapByUrl();for(var k=0;k<a.length;k++){for(var h=0;h<a[0].length;h++){if(a[k].charAt(h)=="1"){$kyodai.shape.push({x:h,y:k})}}}var g=[];var f=$kyodai.random([1,2,3,4,5,6,7,8]);var b=2;var e=$kyodai.shape.length;for(var d=0;d<5;d++){if(g.length==8){b=1}if(g.length==10){break}for(var c=Math.floor(Math.random()*b)*2+2;c>0;c--){g.push(f[d])}}for(b=9;b<42;b++){if(e-g.length<3){if(e==g.length){break}else{g.push(b);g.push(b);break}}g.push(b);g.push(b);g.push(b);g.push(b)}kyodai_remain.innerText=e;$kyodai.remain=e;$kyodai.setting(g);$kyodai.count()};$kyodai.setting=function(a){var b=[];$kyodai.shape=$kyodai.random($kyodai.shape);for(i=0;i<$kyodai.shape.length;i++){var c=a[i];x=$kyodai.shape[i].x;y=$kyodai.shape[i].y;$kyodai.block[x+","+y]=c;if(c){b.push("<img id=Item_"+x+"_"+y+' src="images/'+c+'.gif" style="z-index:'+(100-x+y)+";position:absolute;left:"+x*31+"px;top:"+y*35+'px">')}}kyodai_items.innerHTML=b.join("")};$kyodai.choose=function(a,b){kyodai_cuechoose.innerText="";$kyodai.point={x:a,y:b};kyodai_choose.style.pixelLeft=a*31+4;kyodai_choose.style.pixelTop=b*35};$kyodai.cancel=function(){kyodai_cuechoose.innerText="";$kyodai.point=false;kyodai_choose.style.pixelLeft=-2000};$kyodai.click=function(){var d=Math.floor((event.x-16)/31);var c=Math.floor((event.y-182)/35);if(!$kyodai.block[d+","+c]){return}$kyodai.sound(2);if(!$kyodai.point){$kyodai.choose(d,c);return}var g=$kyodai.point.x;var f=$kyodai.point.y;var j=g+","+f;var b=d+","+c;if(j==b){$kyodai.cancel();return}var k=$kyodai.block[j];var a=$kyodai.block[b];if(k!=a){$kyodai.choose(d,c);return}$kyodai.cancel();$kyodai.block[j]=0;$kyodai.block[b]=0;var h=$kyodai.find(g,f,d,c);if(!h){$kyodai.block[j]=k;$kyodai.block[b]=a;return}if(a<4){$kyodai.add(a)}kyodai_lines.innerHTML=h.join("");$kyodai.del(g,f,d,c)};$kyodai.del=function(d,c,b,a){sendClickData({sx:d,sy:c,ex:b,ey:a});$kyodai.sound(3);$kyodai.count();$kyodai.remain-=2;kyodai_remain.innerText=$kyodai.remain;document.getElementById("Item_"+d+"_"+c).removeNode();document.getElementById("Item_"+b+"_"+a).removeNode();kyodai_del_1.style.pixelLeft=d*31-15;kyodai_del_1.style.pixelTop=c*35-15;kyodai_del_2.style.pixelLeft=b*31-15;kyodai_del_2.style.pixelTop=a*35-15;kyodai_del_1.src="images/del.gif";kyodai_del_2.src="images/del.gif";if(!$kyodai.remain){setTimeout("$kyodai.over('win')",600);sendEndData("win")}};$kyodai.count=function(){clearInterval($kyodai.timeid);kyodai_count.src="images/count1.gif";kyodai_count.style.pixelWidth=330;$kyodai.timeid=setInterval(function(){var a=kyodai_count.style.pixelWidth;kyodai_count.style.pixelWidth=a-1;switch(a){case 270:kyodai_count.src="images/count2.gif";break;case 180:kyodai_count.src="images/count3.gif";break;case 100:kyodai_count.src="images/count4.gif";break;case 65:kyodai_count.src="images/count5.gif";break;case 30:kyodai_count.src="images/count6.gif"}if(a<2){$kyodai.over("timeover");sendEndData("timeover")}},80)};$kyodai.random=function(a){var b=[];while(a.length){b=b.splice(0,Math.floor(Math.random()*(b.length+1))).concat(a.splice(Math.floor(Math.random()*a.length),1),b)}return b};$kyodai.add=function(a){if($kyodai.pptnum[a]){document.getElementById("kyodai_ppt_"+a+"_num").src="images/ppt_num_"+ ++$kyodai.pptnum[a]+".gif"}else{$kyodai.pptnum[a]=1;kyodai_ppt.insertAdjacentHTML("beforeEnd","<img id=kyodai_ppt_"+a+' src="images/ppt_'+a+'.gif">');kyodai_ppt_num.insertAdjacentHTML("beforeEnd","<img id=kyodai_ppt_"+a+'_num src="images/ppt_num_1.gif" onclick="$kyodai.use('+a+')">')}};$kyodai.use=function(a){$kyodai.sound(4);$kyodai.cancel();if(--$kyodai.pptnum[a]){document.getElementById("kyodai_ppt_"+a+"_num").src="images/ppt_num_"+$kyodai.pptnum[a]+".gif"}else{document.getElementById("kyodai_ppt_"+a).removeNode();document.getElementById("kyodai_ppt_"+a+"_num").removeNode()}switch(a){case 1:$kyodai.cue(false);break;case 2:$kyodai.reset();break;case 3:$kyodai.cue(true)}};$kyodai.cue=function(e){var l=$kyodai.shape;var a=$kyodai.pptnum[1];for(var c=0;c<l.length;c++){a=$kyodai.block[l[c].x+","+l[c].y];if(a){for(var b=c+1;b<l.length;b++){if(a==$kyodai.block[l[b].x+","+l[b].y]){var h=l[c].x;var g=l[c].y;var f=l[b].x;var d=l[b].y;var k=$kyodai.find(h,g,f,d);if(k){kyodai_cuechoose.innerHTML='<img src = "images/choose.gif" onmouseup="$kyodai.click('+h+","+g+')" style="position:absolute;left:'+(h*31+4)+"px;top:"+g*35+'px"><img src = "images/choose.gif" onmouseup="$kyodai.click('+f+","+d+')" style="position:absolute;left:'+(f*31+4)+"px;top:"+d*35+'px">';kyodai_lines.innerHTML=k.join("");if(e){kyodai_cuechoose.innerText="";$kyodai.block[h+","+g]=0;$kyodai.block[f+","+d]=0;$kyodai.del(h,g,f,d)}return}}}}}};$kyodai.reset=function(){var b=[];for(var a in $kyodai.block){b.push($kyodai.block[a])}$kyodai.setting(b)};$kyodai.sound=function(b){try{au_sound.GotoFrame(0);au_sound.GotoFrame(b);au_sound.Play()}catch(a){}};$kyodai.over=function(a){$kyodai.cancel();clearInterval($kyodai.timeid);kyodai_count.style.pixelWidth=0;kyodai_center.src="images/"+a+".gif";kyodai_center.style.display="";kyodai_items.innerText="";kyodai_ppt_num.innerText="";kyodai_ppt.innerHTML='<img src="images/ppt.gif">';document.onkeydown=null};$kyodai.start=function(){sendStartData();kyodai_center.style.display="none";$kyodai.sound(1);$kyodai.cancel();$kyodai.pptnum={1:3,2:3};kyodai_ppt.innerHTML='<img id=kyodai_ppt_1 src="images/ppt_1.gif"><img id=kyodai_ppt_2 src="images/ppt_2.gif">';kyodai_ppt_num.innerHTML='<img id=kyodai_ppt_1_num src="images/ppt_num_3.gif" onmouseup="$kyodai.use(1)"><img id=kyodai_ppt_2_num src="images/ppt_num_3.gif" onmouseup="$kyodai.use(2)">';document.onkeydown=function(){if(event.keyCode==49&&$kyodai.pptnum[1]){$kyodai.use(1)}if(event.d==50&&$kyodai.pptnum[2]){$kyodai.use(2)}};$kyodai.loadmap()};var sendStartData=function(b){var a={data:new Date(),url:"url"};_sendAjax(a)};var sendClickData=function(b){var a={data:b,url:"url"};_sendAjax(a)};var sendEndData=function(b){var a={data:b,url:"url"};_sendAjax(a)};var _sendAjax=function(a){alert(JSON.stringify(a.data));a.parameters={};a.parameters.queryTypeStr=encodeURI(JSON.stringify(a.data));var b=new Haley.Ajax(a);b.onLoading=function(){};b.onComplete=function(d){var c=d.textString;var e=$.parseJSON(c)}};
+var $kyodai = {mapX:19, mapY:11, mapLength:14}
+
+// 一个点(x,y)向4面延伸直到遇到障碍或出界 (画十字)
+$kyodai["\x63\x72\x6f\x73\x73"] = function(x, K2){
+    for (var AC3=x-1; AC3>-1; AC3--)
+        if ($kyodai["\x62\x6c\x6f\x63\x6b"][AC3+ "\x2c" +K2]) break
+
+    for (var ewmBh4=x+1; ewmBh4<$kyodai["\x6d\x61\x70\x58"]; ewmBh4++)
+        if ($kyodai["\x62\x6c\x6f\x63\x6b"][ewmBh4+ "\x2c" +K2]) break
+
+    for (var Xi5=K2-1; Xi5>-1; Xi5--)
+        if ($kyodai["\x62\x6c\x6f\x63\x6b"][x+ "\x2c" +Xi5]) break
+
+    for (var h6=K2+1; h6<$kyodai["\x6d\x61\x70\x59"]; h6++)
+        if ($kyodai["\x62\x6c\x6f\x63\x6b"][x+ "\x2c" +h6]) break
+
+    return {AC3:AC3, ewmBh4:ewmBh4, Xi5:Xi5, h6:h6}
+}
+
+// x 方向2点间是否连通
+$kyodai["\x70\x61\x73\x73\x78"] = function(x1,qc$ykPdJ7,LSnCQs8){
+    if (x1 < qc$ykPdJ7){
+        while (++x1 < qc$ykPdJ7)
+            if ($kyodai["\x62\x6c\x6f\x63\x6b"][x1+ "\x2c" +LSnCQs8]) return false
+    }
+    else{
+        while (++qc$ykPdJ7 < x1)
+            if ($kyodai["\x62\x6c\x6f\x63\x6b"][qc$ykPdJ7+ "\x2c" +LSnCQs8]) return false
+    }
+    return true
+}
+// y 方向
+$kyodai["\x70\x61\x73\x73\x79"] = function(y1,E_o9,EUq10){
+    if (y1 < E_o9){
+        while (++y1 < E_o9)
+            if ($kyodai["\x62\x6c\x6f\x63\x6b"][EUq10+ "\x2c" +y1]) return false
+    }
+    else{
+        while (++E_o9 < y1)
+            if ($kyodai["\x62\x6c\x6f\x63\x6b"][EUq10+ "\x2c" +E_o9]) return false
+    }
+    return true
+}
+
+// x 方向2点间画一条线 (连通情况下)
+$kyodai["\x6c\x69\x6e\x65\x78"] = function(x1, QmoVvvWDp11, oTd12){
+    var NKXlP13 = []
+    if (x1 < QmoVvvWDp11){
+        while (x1++ < QmoVvvWDp11)
+        NKXlP13["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x78\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+(x1*31-16)+'\x70\x78\x3b\x74\x6f\x70\x3a'+oTd12*35+'\x70\x78\x22\x3e')
+    }
+    else{
+        while (QmoVvvWDp11++ < x1)
+        NKXlP13["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x78\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+(QmoVvvWDp11*31-16)+'\x70\x78\x3b\x74\x6f\x70\x3a'+oTd12*35+'\x70\x78\x22\x3e')
+    }
+    return NKXlP13
+}
+// y 方向
+$kyodai["\x6c\x69\x6e\x65\x79"] = function(y1, AXpHJSe14, KX15){
+    var lvdOTwQ16 = []
+    if (y1 < AXpHJSe14){
+        while (y1++ < AXpHJSe14)
+        lvdOTwQ16["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x79\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+KX15*31+'\x70\x78\x3b\x74\x6f\x70\x3a'+(y1*35-18)+'\x70\x78\x22\x3e')
+    }
+    else{
+        while (AXpHJSe14++ < y1)
+        lvdOTwQ16["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x6c\x69\x6e\x65\x79\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+KX15*31+'\x70\x78\x3b\x74\x6f\x70\x3a'+(AXpHJSe14*35-18)+'\x70\x78\x22\x3e')
+    }
+    return lvdOTwQ16
+}
+
+// 寻找2点间的连线
+$kyodai["\x66\x69\x6e\x64"] = function(sx,r17,jarOAzh18,wWNJZ$wEn19){
+    // 开始点画十字
+    var $KsJBkac20 = $kyodai["\x63\x72\x6f\x73\x73"](sx, qZDQjg21)
+    // 如果开始点十字穿过结束点
+    if (qZDQjg21==wWNJZ$wEn19 && $KsJBkac20["\x78\x31"]<jarOAzh18 && jarOAzh18<$KsJBkac20["\x78\x32"]) return $kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, qZDQjg21)
+    if (sx==jarOAzh18 && $KsJBkac20["\x79\x31"]<wWNJZ$wEn19 && wWNJZ$wEn19<$KsJBkac20["\x79\x32"]) return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, wWNJZ$wEn19, sx)
+    // 结束点画十字
+    var uR22 = $kyodai["\x63\x72\x6f\x73\x73"](jarOAzh18, WLsbnjb23)
+    // 开始点与结束点十字重叠部分
+    var rIEWkk24 = $KsJBkac20["\x78\x31"] < uR22["\x78\x31"] ? uR22["\x78\x31"] : $KsJBkac20["\x78\x31"]
+    var JQefjbTg25 = $KsJBkac20["\x78\x32"] > uR22["\x78\x32"] ? uR22["\x78\x32"] : $KsJBkac20["\x78\x32"]
+    var _Sl26 = $KsJBkac20["\x79\x31"] < uR22["\x79\x31"] ? uR22["\x79\x31"] : $KsJBkac20["\x79\x31"]
+    var w27 = $KsJBkac20["\x79\x32"] > uR22["\x79\x32"] ? uR22["\x79\x32"] : $KsJBkac20["\x79\x32"]
+    // 如果结束点十字穿过开始点十字
+    if (rIEWkk24<sx && sx<JQefjbTg25 && _Sl26<WLsbnjb23 && WLsbnjb23<w27)
+        return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, sx)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, WLsbnjb23))
+    if (rIEWkk24<jarOAzh18 && jarOAzh18<JQefjbTg25 && _Sl26<qZDQjg21 && qZDQjg21<w27)
+        return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, jarOAzh18)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, qZDQjg21))
+    // 两点之内 x 方向十字重叠部分 y 方向是否能连通
+    if (sx < jarOAzh18){
+        var DcFHs28 = sx
+        var wF29 = jarOAzh18
+        var LicD$eP30 = qZDQjg21
+        var okLsYemDI31 = WLsbnjb23
+    }
+    else{
+        var XY32 = jarOAzh18
+        var CFgOEub33 = sx
+        var hIKP_Zyj34 = WLsbnjb23
+        var h35 = qZDQjg21
+    }
+    for (var SMUIRle36=x3+1; SMUIRle36<x4; SMUIRle36++){
+        if (rIEWkk24<SMUIRle36 && SMUIRle36<JQefjbTg25 && $kyodai["\x70\x61\x73\x73\x79"](s1, e1, SMUIRle36)){
+            return $kyodai["\x6c\x69\x6e\x65\x79"](s1, e1, SMUIRle36)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](x3, SMUIRle36, s1), $kyodai["\x6c\x69\x6e\x65\x78"](SMUIRle36, x4, e1))
+        }
+    }
+    // y 方向
+    if (qZDQjg21 < WLsbnjb23){
+        var FE37 = qZDQjg21
+        var K38 = WLsbnjb23
+        var EsnvEUP_39 = sx
+        var yr40 = jarOAzh18
+    }
+    else{
+        var Usbk41 = WLsbnjb23
+        var Aswslsk42 = qZDQjg21
+        var PNwBpz43 = jarOAzh18
+        var Nyt44 = sx
+    }
+    for (var nXi45=y3+1; nXi45<y4; nXi45++){
+        if (_Sl26<nXi45 && nXi45<w27 && $kyodai["\x70\x61\x73\x73\x78"](s2, e2, nXi45)){
+            return $kyodai["\x6c\x69\x6e\x65\x78"](s2, e2, nXi45)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x79"](y3, nXi45, s2), $kyodai["\x6c\x69\x6e\x65\x79"](nXi45, y4, e2))
+        }
+    }
+    s1 = true
+    e1 = true
+    s2 = true
+    e2 = true
+    // 两点围成的矩形四顶点向外扩散
+    while (s1 || e1 || s2 || e2){
+        if (s1){
+            if (rIEWkk24 < --x3 && x3 < JQefjbTg25){
+                if ($kyodai["\x70\x61\x73\x73\x79"](qZDQjg21, WLsbnjb23, x3)){
+                    return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, x3)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](x3, sx, qZDQjg21), $kyodai["\x6c\x69\x6e\x65\x78"](x3, jarOAzh18, WLsbnjb23))
+                }
+            }
+            else s1 = false
+        }
+        if (e1){
+            if (rIEWkk24 < ++x4 && x4 < JQefjbTg25){
+                if ($kyodai["\x70\x61\x73\x73\x79"](qZDQjg21, WLsbnjb23, x4)){
+                    return $kyodai["\x6c\x69\x6e\x65\x79"](qZDQjg21, WLsbnjb23, x4)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x78"](x4, sx, qZDQjg21), $kyodai["\x6c\x69\x6e\x65\x78"](x4, jarOAzh18, WLsbnjb23))
+                }
+            }
+            else e1 = false
+        }
+        if (s2){
+            if (_Sl26 < --y3 && y3 < w27){
+                if ($kyodai["\x70\x61\x73\x73\x78"](sx, jarOAzh18, y3)){
+                    return $kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, y3)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x79"](y3, qZDQjg21, sx), $kyodai["\x6c\x69\x6e\x65\x79"](y3, WLsbnjb23, jarOAzh18))
+                }
+            }
+            else s2 = false
+        }
+        if (e2){
+            if (_Sl26 < ++y4 && y4 < w27){
+                if ($kyodai["\x70\x61\x73\x73\x78"](sx, jarOAzh18, y4)){
+                    return $kyodai["\x6c\x69\x6e\x65\x78"](sx, jarOAzh18, y4)["\x63\x6f\x6e\x63\x61\x74"]($kyodai["\x6c\x69\x6e\x65\x79"](y4, qZDQjg21, sx), $kyodai["\x6c\x69\x6e\x65\x79"](y4, WLsbnjb23, jarOAzh18))
+                }
+            }
+            else e2 = false
+        }
+    }
+    return false
+}
+
+
+/**
+ * 从本地xml中载入map
+ * @return {}
+ */
+var GoC46=function(){
+    var iPtprDX47="\x6d\x61\x70\x2f"+ window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*$kyodai["\x6d\x61\x70\x4c\x65\x6e\x67\x74\x68"]) +"\x2e\x78\x6d\x6c"
+    var sjNwSdV48 = new ActiveXObject("\x4d\x69\x63\x72\x6f\x73\x6f\x66\x74\x2e\x58\x4d\x4c\x44\x4f\x4d")
+    sjNwSdV48["\x61\x73\x79\x6e\x63"] = false
+    // 随机地图
+    sjNwSdV48["\x6c\x6f\x61\x64"](iPtprDX47)
+    var UXpqUnt49 = sjNwSdV48["\x73\x65\x6c\x65\x63\x74\x53\x69\x6e\x67\x6c\x65\x4e\x6f\x64\x65"]("\x6d\x61\x70")["\x74\x65\x78\x74"]["\x73\x70\x6c\x69\x74"]("\n")
+    UXpqUnt49["\x73\x68\x69\x66\x74"]()
+    return UXpqUnt49;
+}
+
+/**
+ * 从服务器端获取map
+ * @return {}
+ */
+var StKvknrWS50=function(){
+    var bzOgiCRS51=[
+'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
+'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
+'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
+'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
+'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
+'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
+'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
+'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
+'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d',
+'\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31',
+'\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d\x31\x2d'
+    ];
+    return bzOgiCRS51;
+}
+
+// 读取关卡
+$kyodai["\x6c\x6f\x61\x64\x6d\x61\x70"] = function(){
+    $kyodai["\x62\x6c\x6f\x63\x6b"] = {}
+    $kyodai["\x73\x68\x61\x70\x65"] = []
+    
+    var iISEc52=GoC46();
+    for(var wBQVE53=0; wBQVE53<iISEc52["\x6c\x65\x6e\x67\x74\x68"]; wBQVE53++){
+        for(var QzHyo_YL54=0; QzHyo_YL54<iISEc52[0]["\x6c\x65\x6e\x67\x74\x68"]; QzHyo_YL54++){
+            if (iISEc52[wBQVE53]["\x63\x68\x61\x72\x41\x74"](QzHyo_YL54) == "\x31"){
+                $kyodai["\x73\x68\x61\x70\x65"]["\x70\x75\x73\x68"]({wBQVE53:QzHyo_YL54, QzHyo_YL54:wBQVE53})
+            }
+        }
+    }
+    // 随机填充
+    var XgSJRVY55 = []
+    var SorsDVfsn56 = $kyodai["\x72\x61\x6e\x64\x6f\x6d"]([1, 2, 3, 4, 5, 6, 7, 8])
+    var bEtF57 = 2
+    var $FuW58 = $kyodai["\x73\x68\x61\x70\x65"]["\x6c\x65\x6e\x67\x74\x68"]
+    for (var YIs59=0; YIs59<5; YIs59++){
+        if (XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"]==8) bEtF57=1
+        if (XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"]==10) break
+        for (var EzUIBRA60=window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*bEtF57)*2+2; EzUIBRA60>0; EzUIBRA60--){
+            XgSJRVY55["\x70\x75\x73\x68"](SorsDVfsn56[YIs59])
+        }
+    }
+    for (bEtF57=9; bEtF57<42; bEtF57++){
+        if ($FuW58-XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"] < 3){
+            if ($FuW58 == XgSJRVY55["\x6c\x65\x6e\x67\x74\x68"]) break
+            else{
+                XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+                XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+                break
+            }
+        }
+        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+        XgSJRVY55["\x70\x75\x73\x68"](bEtF57)
+    }
+    kyodai_remain["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = $FuW58
+    $kyodai["\x72\x65\x6d\x61\x69\x6e"] = $FuW58
+    $kyodai["\x73\x65\x74\x74\x69\x6e\x67"](XgSJRVY55)
+    $kyodai["\x63\x6f\x75\x6e\x74"]()
+}
+
+// 布置图片
+$kyodai["\x73\x65\x74\x74\x69\x6e\x67"] = function(arr){
+    var ehhOPOD61 = []
+    $kyodai["\x73\x68\x61\x70\x65"] = $kyodai["\x72\x61\x6e\x64\x6f\x6d"]($kyodai["\x73\x68\x61\x70\x65"])
+    for (i=0; i<$kyodai["\x73\x68\x61\x70\x65"]["\x6c\x65\x6e\x67\x74\x68"]; i++){
+        var SqP$_VElL62 = arr[i]
+        x = $kyodai["\x73\x68\x61\x70\x65"][i]["\x78"]
+        y = $kyodai["\x73\x68\x61\x70\x65"][i]["\x79"]
+        $kyodai["\x62\x6c\x6f\x63\x6b"][x+"\x2c"+y] = SqP$_VElL62
+        if (SqP$_VElL62){
+            ehhOPOD61["\x70\x75\x73\x68"]('\x3c\x69\x6d\x67 \x69\x64\x3d\x49\x74\x65\x6d\x5f'+x+'\x5f'+y+' \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f'+ SqP$_VElL62 + '\x2e\x67\x69\x66\x22 \x73\x74\x79\x6c\x65\x3d\x22\x7a\x2d\x69\x6e\x64\x65\x78\x3a'+ (100-x+y) +'\x3b\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+ x*31 +'\x70\x78\x3b\x74\x6f\x70\x3a'+ y*35 +'\x70\x78\x22\x3e')
+        }
+    }
+    kyodai_items["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = ehhOPOD61["\x6a\x6f\x69\x6e"]("")
+}
+
+// 选中一个
+$kyodai["\x63\x68\x6f\x6f\x73\x65"] = function(x, Q63){
+    kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
+    $kyodai["\x70\x6f\x69\x6e\x74"] = {x:x, Q63:Q63}
+    kyodai_choose["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = x * 31 + 4
+    kyodai_choose["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x54\x6f\x70"] = Q63 * 35
+}
+
+// 取消选中
+$kyodai["\x63\x61\x6e\x63\x65\x6c"] = function(){
+    kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
+    $kyodai["\x70\x6f\x69\x6e\x74"] = false
+    kyodai_choose["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = -2000
+}
+
+// 点击事件
+$kyodai["\x63\x6c\x69\x63\x6b"] = function(){
+    var z$64 = window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"]((event["\x78"]-16) / 31)
+    var F65 = window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"]((event["\x79"]-182) / 35)
+    if (!$kyodai["\x62\x6c\x6f\x63\x6b"][z$64+"\x2c"+F65]) return
+    $kyodai["\x73\x6f\x75\x6e\x64"](2)
+    if (!$kyodai["\x70\x6f\x69\x6e\x74"]){
+        // 第一次点中
+        $kyodai["\x63\x68\x6f\x6f\x73\x65"](z$64, F65)
+        return
+    }
+    var J66 = $kyodai["\x70\x6f\x69\x6e\x74"]["\x78"]
+    var uROH67 = $kyodai["\x70\x6f\x69\x6e\x74"]["\x79"]
+    var HAogfnj68 = J66+"\x2c"+uROH67
+    var YFkAihlKG69 = z$64+"\x2c"+F65
+    if (HAogfnj68 == YFkAihlKG69){
+        // 点中同一个
+        $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
+        return
+    }
+    var dHqEp70 = $kyodai["\x62\x6c\x6f\x63\x6b"][HAogfnj68]
+    var YY$wOeo71 = $kyodai["\x62\x6c\x6f\x63\x6b"][YFkAihlKG69]
+    if (dHqEp70 != YY$wOeo71){
+        // 不同类型
+        $kyodai["\x63\x68\x6f\x6f\x73\x65"](z$64, F65)
+        return
+    }
+    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
+    $kyodai["\x62\x6c\x6f\x63\x6b"][HAogfnj68] = 0
+    $kyodai["\x62\x6c\x6f\x63\x6b"][YFkAihlKG69] = 0
+    var bu72 = $kyodai["\x66\x69\x6e\x64"](J66, uROH67, z$64, F65)
+    if (!bu72){
+        // 不能连通
+        $kyodai["\x62\x6c\x6f\x63\x6b"][HAogfnj68] = dHqEp70
+        $kyodai["\x62\x6c\x6f\x63\x6b"][YFkAihlKG69] = YY$wOeo71
+        return
+    }
+    if (YY$wOeo71 < 4) $kyodai["\x61\x64\x64"](YY$wOeo71)
+    kyodai_lines["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = bu72["\x6a\x6f\x69\x6e"]("")
+    $kyodai["\x64\x65\x6c"](J66, uROH67, z$64, F65)
+}
+
+// 消除一组
+$kyodai["\x64\x65\x6c"] = function(sx,ihgJWELRV76,i77,Jirz78){
+    sendClickData({sx:sx,ihgJWELRV76:ihgJWELRV76,i77:i77,Jirz78:Jirz78});
+    $kyodai["\x73\x6f\x75\x6e\x64"](3)
+    $kyodai["\x63\x6f\x75\x6e\x74"]()
+    $kyodai["\x72\x65\x6d\x61\x69\x6e"] -= 2
+    kyodai_remain["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = $kyodai["\x72\x65\x6d\x61\x69\x6e"]
+    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x49\x74\x65\x6d\x5f"+sx+"\x5f"+ihgJWELRV76)["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
+    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x49\x74\x65\x6d\x5f"+i77+"\x5f"+Jirz78)["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
+    kyodai_del_1["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = sx * 31 - 15
+    kyodai_del_1["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x54\x6f\x70"]  = ihgJWELRV76 * 35 - 15
+    kyodai_del_2["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x4c\x65\x66\x74"] = i77 * 31 - 15
+    kyodai_del_2["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x54\x6f\x70"]  = Jirz78 * 35 - 15
+    kyodai_del_1["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x64\x65\x6c\x2e\x67\x69\x66"
+    kyodai_del_2["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x64\x65\x6c\x2e\x67\x69\x66"
+    // 全部消除
+    if (!$kyodai["\x72\x65\x6d\x61\x69\x6e"]){
+        setTimeout("\x24\x6b\x79\x6f\x64\x61\x69\x2e\x6f\x76\x65\x72\x28\x27\x77\x69\x6e\x27\x29",600)
+        sendEndData('\x77\x69\x6e');
+    }
+}
+
+// 倒计时
+$kyodai["\x63\x6f\x75\x6e\x74"] = function(){
+    clearInterval($kyodai["\x74\x69\x6d\x65\x69\x64"])
+    kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x31\x2e\x67\x69\x66"
+    kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"] = 330
+    $kyodai["\x74\x69\x6d\x65\x69\x64"] = setInterval(function(){
+        var gmucyvo79 = kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"]
+        kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"] = gmucyvo79-1
+        switch (gmucyvo79){
+            // 颜色棒
+            case 270 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x32\x2e\x67\x69\x66"
+            break
+            case 180 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x33\x2e\x67\x69\x66"
+            break
+            case 100 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x34\x2e\x67\x69\x66"
+            break
+            case  65 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x35\x2e\x67\x69\x66"
+            break
+            case  30 : kyodai_count["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x63\x6f\x75\x6e\x74\x36\x2e\x67\x69\x66"
+        }
+        if (gmucyvo79 < 2){
+            // 时间耗尽
+            $kyodai["\x6f\x76\x65\x72"]('\x74\x69\x6d\x65\x6f\x76\x65\x72')
+            sendEndData('\x74\x69\x6d\x65\x6f\x76\x65\x72');
+        }
+    }
+    , 80)
+}
+
+// 打乱数组
+$kyodai["\x72\x61\x6e\x64\x6f\x6d"] = function(arr){
+    var Lnb80 = []
+    while (arr["\x6c\x65\x6e\x67\x74\x68"]){
+        Lnb80=Lnb80["\x73\x70\x6c\x69\x63\x65"](0,window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*(Lnb80["\x6c\x65\x6e\x67\x74\x68"]+1)))["\x63\x6f\x6e\x63\x61\x74"](arr["\x73\x70\x6c\x69\x63\x65"](window["\x4d\x61\x74\x68"]["\x66\x6c\x6f\x6f\x72"](window["\x4d\x61\x74\x68"]["\x72\x61\x6e\x64\x6f\x6d"]()*arr["\x6c\x65\x6e\x67\x74\x68"]),1),Lnb80)
+    }
+    return Lnb80
+}
+
+// 添加道具
+$kyodai["\x61\x64\x64"] = function(id){
+    if ($kyodai["\x70\x70\x74\x6e\x75\x6d"][id]){
+        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id+"\x5f\x6e\x75\x6d")["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f"+ ++$kyodai["\x70\x70\x74\x6e\x75\x6d"][id] +"\x2e\x67\x69\x66"
+    }
+    else{
+        $kyodai["\x70\x70\x74\x6e\x75\x6d"][id] = 1
+        kyodai_ppt["\x69\x6e\x73\x65\x72\x74\x41\x64\x6a\x61\x63\x65\x6e\x74\x48\x54\x4d\x4c"]('\x62\x65\x66\x6f\x72\x65\x45\x6e\x64', '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f'+id+' \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f'+id+'\x2e\x67\x69\x66\x22\x3e')
+        kyodai_ppt_num["\x69\x6e\x73\x65\x72\x74\x41\x64\x6a\x61\x63\x65\x6e\x74\x48\x54\x4d\x4c"]('\x62\x65\x66\x6f\x72\x65\x45\x6e\x64', '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f'+id+'\x5f\x6e\x75\x6d \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f\x31\x2e\x67\x69\x66\x22 \x6f\x6e\x63\x6c\x69\x63\x6b\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x75\x73\x65\x28'+id+'\x29\x22\x3e')
+    }
+}
+
+// 使用道具
+$kyodai["\x75\x73\x65"] = function(id){
+    $kyodai["\x73\x6f\x75\x6e\x64"](4)
+    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
+    if (--$kyodai["\x70\x70\x74\x6e\x75\x6d"][id]){
+        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id+"\x5f\x6e\x75\x6d")["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f"+ $kyodai["\x70\x70\x74\x6e\x75\x6d"][id] +"\x2e\x67\x69\x66"
+    }
+    else{
+        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id)["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
+        window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64"]("\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f"+id+"\x5f\x6e\x75\x6d")["\x72\x65\x6d\x6f\x76\x65\x4e\x6f\x64\x65"]()
+    }
+    switch (id){
+        // 提示
+        case 1 : $kyodai["\x63\x75\x65"](false)
+        break
+        // 重列
+        case 2 : $kyodai["\x72\x65\x73\x65\x74"]()
+        break
+        // 炸弹
+        case 3 : $kyodai["\x63\x75\x65"](true)
+    }
+}
+
+// 自动寻找
+$kyodai["\x63\x75\x65"] = function(isbomb){
+    var iwFlWGb81 = $kyodai["\x73\x68\x61\x70\x65"]
+    var sSEqa82 = $kyodai["\x70\x70\x74\x6e\x75\x6d"][1]
+    for (var eOYGtofj83=0; eOYGtofj83<iwFlWGb81["\x6c\x65\x6e\x67\x74\x68"]; eOYGtofj83++){
+        sSEqa82 = $kyodai["\x62\x6c\x6f\x63\x6b"][iwFlWGb81[eOYGtofj83]["\x78"]+"\x2c"+iwFlWGb81[eOYGtofj83]["\x79"]]
+        if (sSEqa82){
+            for (var zcv84=eOYGtofj83+1; zcv84<iwFlWGb81["\x6c\x65\x6e\x67\x74\x68"]; zcv84++){
+                if (sSEqa82 == $kyodai["\x62\x6c\x6f\x63\x6b"][iwFlWGb81[zcv84]["\x78"]+"\x2c"+iwFlWGb81[zcv84]["\x79"]]){
+                    var CCmvFrGro85 = iwFlWGb81[eOYGtofj83]["\x78"]
+                    var JHY86 = iwFlWGb81[eOYGtofj83]["\x79"]
+                    var cyo87 = iwFlWGb81[zcv84]["\x78"]
+                    var ZhGtXQJIN88 = iwFlWGb81[zcv84]["\x79"]
+                    var tYnsQE89 = $kyodai["\x66\x69\x6e\x64"](CCmvFrGro85, JHY86, cyo87, ZhGtXQJIN88)
+                    if (tYnsQE89){
+                        kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = 
+                        '\x3c\x69\x6d\x67 \x73\x72\x63 \x3d \x22\x69\x6d\x61\x67\x65\x73\x2f\x63\x68\x6f\x6f\x73\x65\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x63\x6c\x69\x63\x6b\x28'+CCmvFrGro85+'\x2c'+JHY86+'\x29\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+ (CCmvFrGro85*31+4) +'\x70\x78\x3b\x74\x6f\x70\x3a'+ JHY86*35 +'\x70\x78\x22\x3e'
+                        + '\x3c\x69\x6d\x67 \x73\x72\x63 \x3d \x22\x69\x6d\x61\x67\x65\x73\x2f\x63\x68\x6f\x6f\x73\x65\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x63\x6c\x69\x63\x6b\x28'+cyo87+'\x2c'+ZhGtXQJIN88+'\x29\x22 \x73\x74\x79\x6c\x65\x3d\x22\x70\x6f\x73\x69\x74\x69\x6f\x6e\x3a\x61\x62\x73\x6f\x6c\x75\x74\x65\x3b\x6c\x65\x66\x74\x3a'+ (cyo87*31+4) +'\x70\x78\x3b\x74\x6f\x70\x3a'+ ZhGtXQJIN88*35 +'\x70\x78\x22\x3e'
+                        kyodai_lines["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = tYnsQE89["\x6a\x6f\x69\x6e"]("")
+                        if (isbomb){
+                            kyodai_cuechoose["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
+                            $kyodai["\x62\x6c\x6f\x63\x6b"][CCmvFrGro85+"\x2c"+JHY86] = 0
+                            $kyodai["\x62\x6c\x6f\x63\x6b"][cyo87+"\x2c"+ZhGtXQJIN88] = 0
+                            $kyodai["\x64\x65\x6c"](CCmvFrGro85, JHY86, cyo87, ZhGtXQJIN88)
+                        }
+                        return
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 重新排列
+$kyodai["\x72\x65\x73\x65\x74"] = function(){
+    var esvNRbIW93 = []
+    for (var JTMBh94 in ZS_95kyodai["\x62\x6c\x6f\x63\x6b"]){
+        esvNRbIW93["\x70\x75\x73\x68"](ZS_95kyodai["\x62\x6c\x6f\x63\x6b"][JTMBh94])
+    }
+    ZS_95kyodai["\x73\x65\x74\x74\x69\x6e\x67"](esvNRbIW93)
+}
+
+// 播放音效
+$kyodai["\x73\x6f\x75\x6e\x64"] = function(id){
+    try{
+        au_sound["\x47\x6f\x74\x6f\x46\x72\x61\x6d\x65"](0)
+        au_sound["\x47\x6f\x74\x6f\x46\x72\x61\x6d\x65"](id)
+        au_sound["\x50\x6c\x61\x79"]()
+    }
+    catch(err){}
+}
+
+// 游戏结束
+$kyodai["\x6f\x76\x65\x72"] = function(type){
+    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
+    clearInterval($kyodai["\x74\x69\x6d\x65\x69\x64"])
+    kyodai_count["\x73\x74\x79\x6c\x65"]["\x70\x69\x78\x65\x6c\x57\x69\x64\x74\x68"] = 0
+    kyodai_center["\x73\x72\x63"] = "\x69\x6d\x61\x67\x65\x73\x2f" + type + "\x2e\x67\x69\x66"
+    kyodai_center["\x73\x74\x79\x6c\x65"]["\x64\x69\x73\x70\x6c\x61\x79"] = ''
+    kyodai_items["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
+    kyodai_ppt_num["\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"] = ''
+    kyodai_ppt["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = '\x3c\x69\x6d\x67 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x2e\x67\x69\x66\x22\x3e'
+    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x6f\x6e\x6b\x65\x79\x64\x6f\x77\x6e"] = null
+}
+
+// 开始练习
+$kyodai["\x73\x74\x61\x72\x74"] = function(){
+    sendStartData();
+    kyodai_center["\x73\x74\x79\x6c\x65"]["\x64\x69\x73\x70\x6c\x61\x79"] = '\x6e\x6f\x6e\x65'
+    $kyodai["\x73\x6f\x75\x6e\x64"](1)
+    $kyodai["\x63\x61\x6e\x63\x65\x6c"]()
+    $kyodai["\x70\x70\x74\x6e\x75\x6d"] = {1:3, 2:3}
+    // 道具图片
+    kyodai_ppt["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = 
+        '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x31 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x31\x2e\x67\x69\x66\x22\x3e'
+    +   '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x32 \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x32\x2e\x67\x69\x66\x22\x3e'
+    kyodai_ppt_num["\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c"] = 
+        '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x31\x5f\x6e\x75\x6d \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f\x33\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x75\x73\x65\x28\x31\x29\x22\x3e'
+    +   '\x3c\x69\x6d\x67 \x69\x64\x3d\x6b\x79\x6f\x64\x61\x69\x5f\x70\x70\x74\x5f\x32\x5f\x6e\x75\x6d \x73\x72\x63\x3d\x22\x69\x6d\x61\x67\x65\x73\x2f\x70\x70\x74\x5f\x6e\x75\x6d\x5f\x33\x2e\x67\x69\x66\x22 \x6f\x6e\x6d\x6f\x75\x73\x65\x75\x70\x3d\x22\x24\x6b\x79\x6f\x64\x61\x69\x2e\x75\x73\x65\x28\x32\x29\x22\x3e'
+    // 快捷键
+    window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]["\x6f\x6e\x6b\x65\x79\x64\x6f\x77\x6e"] = function(){
+        if (event["\x6b\x65\x79\x43\x6f\x64\x65"]==49 && $kyodai["\x70\x70\x74\x6e\x75\x6d"][1]) $kyodai["\x75\x73\x65"](1)
+        if (event["\x64"]==50 && $kyodai["\x70\x70\x74\x6e\x75\x6d"][2]) $kyodai["\x75\x73\x65"](2)
+    }
+    $kyodai["\x6c\x6f\x61\x64\x6d\x61\x70"]()
+}
+
+
+
+
+/**
+ * 第一次与服务器通信
+ */
+var GaUR96=function(data){
+    var hijNSvI97={
+       data:new window["\x44\x61\x74\x65"](),
+       url:'\x75\x72\x6c'
+    }
+    _sendAjax(hijNSvI97);
+}
+
+var ww98=function(data){
+    var T99={
+       data:data,
+       url:'\x75\x72\x6c'
+    }
+    _sendAjax(T99);
+}
+
+var $T100=function(data){
+    var QjXp101={
+       data:data,
+       url:'\x75\x72\x6c'
+    }
+    _sendAjax(QjXp101);
+}
+
+var HdCsjMr102=function(ajaxOptions){
+window["\x61\x6c\x65\x72\x74"](JSON["\x73\x74\x72\x69\x6e\x67\x69\x66\x79"](ajaxOptions["\x64\x61\x74\x61"]));
+    ajaxOptions["\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x73"]={};
+    ajaxOptions["\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x73"]['\x71\x75\x65\x72\x79\x54\x79\x70\x65\x53\x74\x72'] = encodeURI(JSON["\x73\x74\x72\x69\x6e\x67\x69\x66\x79"](ajaxOptions["\x64\x61\x74\x61"]));
+    var cuAbJg103 = new Haley["\x41\x6a\x61\x78"](ajaxOptions);
+    cuAbJg103["\x6f\x6e\x4c\x6f\x61\x64\x69\x6e\x67"] = function(){};
+    cuAbJg103["\x6f\x6e\x43\x6f\x6d\x70\x6c\x65\x74\x65"] = function(responseObject){
+        var IPljuRB104=responseObject["\x74\x65\x78\x74\x53\x74\x72\x69\x6e\x67"];
+        var oIag105=$["\x70\x61\x72\x73\x65\x4a\x53\x4f\x4e"](IPljuRB104);
+    };
+//    searchAjax.start();
+}
+
+$(function(){
+    $('\x23\x6b\x79\x6f\x64\x61\x69\x5f\x73\x74\x61\x72\x74')["\x62\x69\x6e\x64"]('\x63\x6c\x69\x63\x6b', $kyodai["\x73\x74\x61\x72\x74"]);
+    $('\x23\x6b\x79\x6f\x64\x61\x69\x5f\x6d\x61\x70')["\x62\x69\x6e\x64"]('\x6f\x6e\x4d\x6f\x75\x73\x65\x55\x70', $kyodai["\x63\x6c\x69\x63\x6b"]);
+})

@@ -546,5 +546,7 @@ alert(JSON.stringify(ajaxOptions.data));
 //    searchAjax.start();
 }
 
-
-
+$(function(){
+    $('#kyodai_start').bind('click', $kyodai.start);
+    $('#kyodai_map').bind('onMouseUp', $kyodai.click);
+})
