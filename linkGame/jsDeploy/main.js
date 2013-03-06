@@ -483,7 +483,6 @@ $kyodai.over = function(type){
 
 // ¿ªÊ¼Á·Ï°
 $kyodai.start = function(){
-    sendStartData();
     kyodai_center.style.display = 'none'
     $kyodai.sound(1)
     $kyodai.cancel()
@@ -501,6 +500,7 @@ $kyodai.start = function(){
         if (event.d==50 && $kyodai.pptnum[2]) $kyodai.use(2)
     }
     $kyodai.loadmap()
+    sendStartData($kyodai.block)
 }
 
 
@@ -511,7 +511,7 @@ $kyodai.start = function(){
  */
 var sendStartData=function(data){
     var ajaxOptions={
-       data:new Date(),
+       data:data,
        url:'url'
     }
     _sendAjax(ajaxOptions);
