@@ -272,8 +272,8 @@ $kyodai.cancel = function(){
 
 // 点击事件
 $kyodai.click = function(){
-    var ex = Math.floor((event.x-16) / 31)
-    var ey = Math.floor((event.y-182) / 35)
+    var ex = Math.floor((event.x-10) / 31)
+    var ey = Math.floor((event.y-180) / 35)
     if (!$kyodai.block[ex+","+ey]) return
     $kyodai.sound(2)
     if (!$kyodai.point){
@@ -314,6 +314,7 @@ $kyodai.click = function(){
 
 // 消除一组
 $kyodai.del = function(sx,sy,ex,ey){
+    kyodai_iframe.window.location.reload();
     if(!$kyodai.practice){
         sendClickData({sx:sx,sy:sy,ex:ex,ey:ey});
     }
@@ -325,12 +326,29 @@ $kyodai.del = function(sx,sy,ex,ey){
 //    document.getElementById("Item_"+ex+"_"+ey).removeNode()
     $("#Item_"+sx+"_"+sy).remove()
     $("#Item_"+ex+"_"+ey).remove()
-    kyodai_del_1.style.pixelLeft = sx * 31 - 15
-    kyodai_del_1.style.pixelTop  = sy * 35 - 15
-    kyodai_del_2.style.pixelLeft = ex * 31 - 15
-    kyodai_del_2.style.pixelTop  = ey * 35 - 15
-    kyodai_del_1.src = $kyodai_images_url.value+"/del.gif"
-    kyodai_del_2.src = $kyodai_images_url.value+"/del.gif"
+    
+//    kyodai_del_1.style.pixelLeft = sx * 31 - 15
+//    kyodai_del_1.style.pixelTop  = sy * 35 - 15
+//    kyodai_del_2.style.pixelLeft = ex * 31 - 15
+//    kyodai_del_2.style.pixelTop  = ey * 35 - 15
+//    kyodai_del_1.src = $kyodai_images_url.value+"/del.gif"
+//    kyodai_del_2.src = $kyodai_images_url.value+"/del.gif"
+//        <img id=kyodai_del_1 src="${_res}/images/del.gif" style="position:absolute;left:-999px"> 
+//        <img id=kyodai_del_2 src="${_res}/images/del.gif" style="position:absolute;left:-999px"> 
+    $('#kyodai_del_1').remove();
+    $('#kyodai_del_2').remove();
+    var obj1=$("<img id=kyodai_del_1 style='position:absolute;z-index:999;' width='35' height='39'/>")
+    var obj2=$("<img id=kyodai_del_2 style='position:absolute;z-index:999;' width='35' height='39'/>")
+    obj1.css('pixelLeft',(sx * 31 +10)+'');
+    obj1.css('pixelTop',(sy * 35 +180)+'');
+    obj2.css('pixelLeft',(ex * 31 +10)+'');
+    obj2.css('pixelTop',(ey * 35 +180)+'');
+    obj1.attr('src',$kyodai_images_url.value+'/del.gif');
+    obj2.attr('src',$kyodai_images_url.value+'/del.gif');
+    var objContain=$('#kyodai_map');
+    obj1.insertAfter(objContain);
+    obj2.insertAfter(objContain);
+    
     // 全部消除
     if (!$kyodai.remain){
         clearInterval($kyodai.timeid)
@@ -482,7 +500,7 @@ $kyodai.over = function(type){
 }
 
 // 开始练习
-$kyodai.start = function(){
+$kyodai.start = function(flag){
     kyodai_center.style.display = 'none'
     $kyodai.sound(1)
     $kyodai.cancel()
@@ -499,22 +517,33 @@ $kyodai.start = function(){
         if (event.keyCode==49 && $kyodai.pptnum[1]) $kyodai.use(1)
         if (event.d==50 && $kyodai.pptnum[2]) $kyodai.use(2)
     }
-    getMap();
+    getMap(flag);
 }
 
 var _getPassport=function(){
 //    return 10000+Math.floor(Math.random()*1000%11);
-    return "gangtaoyu@sohu.com";
+    return "saatest@sohu.com";
 }
+
+var _getActiveId=function(){
+    return "8a8104583d67adc6013d67d111630005";
+}
+
 
 /**
  * 从服务器获取地图
  */
-var getMap=function(){
+var getMap=function(flag){
     var queryType={
-       getMap:'getMap'
+       getMap:flag,
+       passport:_getPassport(),
+       activeId:_getActiveId()
     }
     _sendAjaxLinkGame(queryType,function(rstObj){
+        if(rstObj.msg){
+            alert(rstObj.msg);
+            window.location.reload();//简单处理，刷页面 TODO 可以做成是停止游戏
+        }
         _getMapFromServer.map=rstObj.map;
         $kyodai.loadmap()
         if(!$kyodai.practice){
@@ -541,10 +570,13 @@ var sendStartData=function(data){
     var dataStr=JSON.stringify(data);
     var queryType={
        startData:dataStr,
-       passport:_getPassport()
+       passport:_getPassport(),
+       activeId:_getActiveId()
     }
     _sendAjaxLinkGame(queryType,function(rstObj){
-//        alert(rstObj.gameId);
+        if(rstObj.msg){
+            alert(rstObj.msg);
+        }
         if(rstObj.gameId.length<1){
             alert('服务器异常，请重新开始游戏！');
         }
@@ -562,9 +594,10 @@ var sendClickData=function(data){
        gameId:sendStartData.gameId
     }
     _sendAjaxLinkGame(queryType,function(rstObj){
-//        alert(rstObj.gameId);
+        if(rstObj.msg){
+            alert(rstObj.msg);
+        }
     });
-    kyodai_iframe.window.location.reload();
 }
 
 /**
@@ -581,50 +614,52 @@ var sendEndData=function(data){
         var timeObj=$('#kyodai_time');
         timeObj.text(rstObj.time/1000.000+'秒');
         timeObj.show();
+        if(rstObj.msg){
+            alert(rstObj.msg);
+        }
     });
     $('#kyodai_start').attr('src',$kyodai_images_url.value+'/anniu1.gif');
     $('#kyodai_start').bind('click', _startClick);
     $('#kyodai_test').attr('src',$kyodai_images_url.value+'/anniu.gif');
     $('#kyodai_test').bind('click', _testClick);
+    kyodai_iframe.window.location.reload();
 }
-
-//var _sendAjaxLinkGame=function(queryType,callback){
-//    var ajaxOptions={
-//       url:webAppId.value+'/2011SHshow/linkGame/gameData.at',
-//       parameters:{},
-//       method:'post'
-//    }
-//    ajaxOptions.parameters['queryTypeStr'] = encodeURI(JSON.stringify(queryType));
-//    var searchAjax = new Haley.Ajax(ajaxOptions);
-//    searchAjax.onLoading = function(){};
-//    searchAjax.onComplete = function(responseObject){
-//        var result=responseObject.textString;
-//        var retObj=$.parseJSON(result);
-//        callback(retObj);
-//    };
-//    searchAjax.start();
-//}
-
-
 
 var _sendAjaxLinkGame=function(queryType,callback){
-    var settings = {
-        type: "POST",
-        url:webAppId.value+'/2011SHshow/linkGame/gameData.at',
-        timeout: 1000,
-        error: function(XHR,textStatus,errorThrown) {
-            alert("XHR="+XHR+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
-        },
-        success: function(data,textStatus) {
-            var retObj=$.parseJSON(data);
-            callback(retObj);
-        },
-        data: {queryTypeStr:encodeURI(JSON.stringify(queryType))}
+    var ajaxOptions={
+       url:webAppId.value+'/2011SHshow/linkGame/gameData.at',
+       parameters:{},
+       method:'post'
+    }
+    ajaxOptions.parameters['queryTypeStr'] = encodeURI(JSON.stringify(queryType));
+    var searchAjax = new Haley.Ajax(ajaxOptions);
+    searchAjax.onLoading = function(){};
+    searchAjax.onComplete = function(responseObject){
+        var result=responseObject.textString;
+        var retObj=$.parseJSON(result);
+        callback(retObj);
     };
-    $.ajax(settings);
+    searchAjax.start();
 }
 
 
+
+//var _sendAjaxLinkGame=function(queryType,callback){
+//    var settings = {
+//        type: "POST",
+//        url:webAppId.value+'/2011SHshow/linkGame/gameData.at',
+//        timeout: 1000,
+//        error: function(XHR,textStatus,errorThrown) {
+//            alert("XHR="+XHR+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
+//        },
+//        success: function(data,textStatus) {
+//            var retObj=$.parseJSON(data);
+//            callback(retObj);
+//        },
+//        data: {queryTypeStr:encodeURI(JSON.stringify(queryType))}
+//    };
+//    $.ajax(settings);
+//}
 
 
 var _startClick=function(){
@@ -634,15 +669,15 @@ var _startClick=function(){
     $('#kyodai_start').unbind();
     $('#kyodai_test').attr('src',$kyodai_images_url.value+'/anniu0.gif')
     $('#kyodai_test').unbind();
-    $kyodai.start();
-    kyodai_iframe.window.location.reload();
+    $kyodai.start('start');//开始
+//    kyodai_iframe.window.location.reload();
 }
 
 var _testClick=function(){
     $('#kyodai_time').hide();
     $kyodai.practice=1;// 是否是练习
-    $kyodai.start();
-    kyodai_iframe.window.location.reload();
+    $kyodai.start('test');//练习
+//    kyodai_iframe.window.location.reload();
 }
 
 $(function(){
