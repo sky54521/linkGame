@@ -354,8 +354,10 @@ $kyodai.del = function(sx,sy,ex,ey){
         clearInterval($kyodai.timeid)
         setTimeout("$kyodai.over('win')",600)
         if(!$kyodai.practice){
-            setTimeout("sendEndData('win')",600)
+            setTimeout("sendEndData('win')",600);
+	        $('#unitId').hide();
         }
+        clearInterval($kyodai.timeClockId);
     }
 }
 
@@ -384,7 +386,9 @@ $kyodai.count = function(){
             $kyodai.over('timeover')
             if(!$kyodai.practice){
                 sendEndData('timeover');
+                $('#unitId').hide();
             }
+            clearInterval($kyodai.timeClockId);
         }
     }
     , 80)
@@ -499,8 +503,12 @@ $kyodai.over = function(type){
     document.onkeydown = null
 }
 
-// 开始练习
+// 开始
 $kyodai.start = function(flag){
+    //把爆炸图片移开
+    $('#kyodai_del_1').remove();
+    $('#kyodai_del_2').remove();
+    $kyodai.timeClock();
     kyodai_center.style.display = 'none'
     $kyodai.sound(1)
     $kyodai.cancel()
@@ -520,16 +528,6 @@ $kyodai.start = function(flag){
     getMap(flag);
 }
 
-var _getPassport=function(){
-//    return 10000+Math.floor(Math.random()*1000%11);
-    return "saatest@sohu.com";
-}
-
-var _getActiveId=function(){
-    return "8a8104583d67adc6013d67d111630005";
-}
-
-
 /**
  * 从服务器获取地图
  */
@@ -543,6 +541,7 @@ var getMap=function(flag){
         if(rstObj.msg){
             alert(rstObj.msg);
             window.location.reload();//简单处理，刷页面 TODO 可以做成是停止游戏
+            return;
         }
         _getMapFromServer.map=rstObj.map;
         $kyodai.loadmap()
@@ -607,8 +606,10 @@ var sendClickData=function(data){
 var sendEndData=function(data){
     var queryType={
        endData:data,
-       gameId:sendStartData.gameId
+       gameId:sendStartData.gameId,
+       encrypt:1
     }
+    
     _sendAjaxLinkGame(queryType,function(rstObj){
 //        alert(rstObj.gameId);
         var timeObj=$('#kyodai_time');
@@ -625,13 +626,35 @@ var sendEndData=function(data){
     kyodai_iframe.window.location.reload();
 }
 
+
+
+var _encryptStr=function(str){
+	var _getPair=function(){
+	    var rkeyM=$('#rkeyM').val();
+	    var rkeyE=$('#rkeyE').val();
+	    setMaxDigits(130);
+	    return new RSAKeyPair(rkeyE,"",rkeyM);
+	}
+    return encryptedString(_getPair(), encodeURIComponent(str));
+}
+
+
+function bodyRSA(){
+    setMaxDigits(130);
+    return new RSAKeyPair("10001","","8246a46f44fc4d961e139fd70f4787d272d374532f4d2d9b7cbaad6a15a8c1301319aa6b3f30413b859351c71938aec516fa7147b69168b195e81df46b6bed7950cf3a1c719d42175f73d7c97a85d7d20a9e83688b92f05b3059bb2ff75cd7190a042cd2db97ebc2ab4da366f2a7085556ed613b5a39c9fdd2bb2595d1dc23b5"); 
+}
+
 var _sendAjaxLinkGame=function(queryType,callback){
     var ajaxOptions={
        url:webAppId.value+'/2011SHshow/linkGame/gameData.at',
        parameters:{},
        method:'post'
     }
-    ajaxOptions.parameters['queryTypeStr'] = encodeURI(JSON.stringify(queryType));
+    var queryTypeStr=JSON.stringify(queryType);
+    if(queryType.encrypt==1){//加密处理
+        queryTypeStr = _encryptStr(queryTypeStr);
+    }
+    ajaxOptions.parameters['queryTypeStr'] = encodeURI(queryTypeStr);
     var searchAjax = new Haley.Ajax(ajaxOptions);
     searchAjax.onLoading = function(){};
     searchAjax.onComplete = function(responseObject){
@@ -680,8 +703,65 @@ var _testClick=function(){
 //    kyodai_iframe.window.location.reload();
 }
 
+//计时器
+$kyodai.timeClock=function(){
+    clearInterval($kyodai.timeClockId);
+    var ele=$('#timeClockId');
+    ele.html('');
+    $('#unitId').show();
+    $kyodai.timeClockId = setInterval(function(){
+        var curTime=ele.html()-0;
+        var value=curTime*10+1;
+        if(value%10==0){
+            value=(value/10)+'.0';
+        }else{
+            value=value/10;
+        }
+        ele.html(value);
+    },100);
+}
+
+
+var _getPassport=function(){
+//    return 10000+Math.floor(Math.random()*1000%11);
+    var passport=PassportSC.cookieHandle();
+//    alert(passport);
+    if(!passport){
+	    passport='saatest@sohu.com';
+    }
+    return passport;
+}
+
+var _getActiveId=function(){
+    return "8a8104583d67adc6013d67d111630005";
+}
+
+//打开游戏窗口
+var _openUrl=function(){
+    var href='http://127.0.0.1:8080/2011ShowSH/2011SHshow/linkGame/game.at';
+    var iWidth=800; // 窗口宽度
+    var iHeight=600;// 窗口高度
+    var iTop=(window.screen.height-iHeight)/2;           
+    var iLeft=(window.screen.width-iWidth)/2;
+    window.open(href,"Detail","location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no,     Width="+iWidth+" ,Height="+iHeight+",top="+iTop+",left="+iLeft);
+}
+
 $(function(){
     $('#kyodai_start').bind('click', _startClick);
     $('#kyodai_test').bind('click', _testClick);
     $('#kyodai_map').bind('click', $kyodai.click);
+    
+    $('.userLink').bind('click',function(){
+//        http://i.auto.sohu.com/user/show/3370990.shtml
+        var userId=$(this).attr('data');
+        var href='http://i.auto.sohu.com/user/show/'+userId+'.shtml';
+        window.open(href);
+    });
+    
+    //设置排行榜iframe
+    var queryType={};
+    queryType.activeId=_getActiveId();
+    var href='2011SHshow/linkGame/rankList.at?queryTypeStr='+encodeURI(JSON.stringify(queryType));
+    $('#kyodai_iframe').attr('src',href);
+//    setMaxDigits(130);
 })

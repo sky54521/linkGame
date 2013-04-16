@@ -1,0 +1,1 @@
+$(function(){$(".userLinkx").bind("click",function(){var b=$(this).attr("data");var a="http://i.auto.sohu.com/user/show/"+b+".shtml";window.open(a)})});
