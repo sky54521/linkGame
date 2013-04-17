@@ -355,7 +355,7 @@ $kyodai.del = function(sx,sy,ex,ey){
         setTimeout("$kyodai.over('win')",600)
         if(!$kyodai.practice){
             setTimeout("sendEndData('win')",600);
-	        $('#unitId').hide();
+            $('#unitId').hide();
         }
         clearInterval($kyodai.timeClockId);
     }
@@ -508,7 +508,7 @@ $kyodai.start = function(flag){
     //°Ñ±¬Õ¨Í¼Æ¬ÒÆ¿ª
     $('#kyodai_del_1').remove();
     $('#kyodai_del_2').remove();
-    $kyodai.timeClock();
+//    $kyodai.timeClock();
     kyodai_center.style.display = 'none'
     $kyodai.sound(1)
     $kyodai.cancel()
@@ -629,12 +629,12 @@ var sendEndData=function(data){
 
 
 var _encryptStr=function(str){
-	var _getPair=function(){
-	    var rkeyM=$('#rkeyM').val();
-	    var rkeyE=$('#rkeyE').val();
-	    setMaxDigits(130);
-	    return new RSAKeyPair(rkeyE,"",rkeyM);
-	}
+    var _getPair=function(){
+        var rkeyM=$('#rkeyM').val();
+        var rkeyE=$('#rkeyE').val();
+        setMaxDigits(130);
+        return new RSAKeyPair(rkeyE,"",rkeyM);
+    }
     return encryptedString(_getPair(), encodeURIComponent(str));
 }
 
@@ -726,9 +726,9 @@ var _getPassport=function(){
 //    return 10000+Math.floor(Math.random()*1000%11);
     var passport=PassportSC.cookieHandle();
 //    alert(passport);
-    if(!passport){
-	    passport='saatest@sohu.com';
-    }
+//    if(!passport){
+//      passport='saatest@sohu.com';
+//    }
     return passport;
 }
 
@@ -765,3 +765,4 @@ $(function(){
     $('#kyodai_iframe').attr('src',href);
 //    setMaxDigits(130);
 })
+2
